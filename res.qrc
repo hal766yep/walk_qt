@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/excel">
+        <file>channelAxis.csv</file>
+        <file>channelAxis16x16.csv</file>
+    </qresource>
+</RCC>

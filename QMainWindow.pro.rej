@@ -1,0 +1,21 @@
+diff a/QMainWindow.pro b/QMainWindow.pro	(rejected hunks)
+@@ -28,6 +28,7 @@
+ SOURCES += \
+     main.cpp \
+     mainwindow.cpp \
++    model_processing.cpp \
+     vHeatMap/src/kriginginterpolation.cpp \
+     vHeatMap/src/radialbasisfunction.cpp \
+     vHeatMap/vheatmap.cpp \
+@@ -79,3 +80,11 @@
+ RESOURCES += \
+     res.qrc
+ RC_ICONS = myico.ico
++
++INCLUDEPATH += E:/ChromeDownloads/opencv/build/include
++INCLUDEPATH += E:/ChromeDownloads/opencv/build/include/opencv2
++
++LIBS += -LE:/ChromeDownloads/opencv/build/x64/vc16/lib\
++        -lopencv_world4110
++
++# 如果用的是 opencv_core、opencv_imgproc 等，也可以单独写 -lopencv_core411 等

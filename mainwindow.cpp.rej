@@ -1,0 +1,19 @@
+diff a/mainwindow.cpp b/mainwindow.cpp	(rejected hunks)
+@@ -776,4 +776,17 @@
+     QMessageBox::information(this,"帮助","");
+ }
+ 
++/*--------------快照保存相关----------------*/
++void MainWindow::takePressureSnapshot(const std::vector<double>& data)
++{
++    PressureSnapshot snap;
++    snap.timestamp = QDateTime::currentDateTime();
++    snap.data      = data;           // 拷贝一份数据
++
++    m_snapshots.append(std::move(snap));
++
++    //（可选）在 UI 上显示一下快照总数
++//    ui->labelSnapshotCount->setText(
++//        QString::number(m_snapshots.count()));
++}
+ 

@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "name": "Win32 (CMake)",
+            "compileCommands": [
+                "${workspaceFolder}/build/compile_commands.json"
+            ],
+            "includePath": [
+                "${workspaceFolder}/build",
+                "${workspaceFolder}/**",
+                "D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/**",
+                "D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/vHeatMap",
+                "D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/vSerialPortCfg",
+                "D:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore",
+                "D:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtGui",
+                "D:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets",
+                "${workspaceFolder}/vSerialPortCfg"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "QT_CORE_LIB",
+                "QT_GUI_LIB",
+                "QT_WIDGETS_LIB"
+            ],
+            "compilerPath": "C:/MinGW/bin/gcc.exe",
+            "cStandard": "c11",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "windows-gcc-x86"
+        }
+    ],
+    "version": 4
+}

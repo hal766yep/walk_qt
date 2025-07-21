@@ -1,0 +1,3 @@
+D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/build/CMakeFiles/MyQtApp.dir
+D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/build/CMakeFiles/edit_cache.dir
+D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/build/CMakeFiles/rebuild_cache.dir

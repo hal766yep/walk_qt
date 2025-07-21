@@ -1,0 +1,14 @@
+[
+{
+  "directory": "D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/build",
+  "command": "C:/MinGW/bin/g++.exe -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB @CMakeFiles/MyQtApp.dir/includes_CXX.rsp -g -std=gnu++14 -o CMakeFiles/MyQtApp.dir/main.cpp.obj -c D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/main.cpp",
+  "file": "D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/main.cpp",
+  "output": "CMakeFiles/MyQtApp.dir/main.cpp.obj"
+},
+{
+  "directory": "D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/build",
+  "command": "C:/MinGW/bin/g++.exe -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB @CMakeFiles/MyQtApp.dir/includes_CXX.rsp -g -std=gnu++14 -o CMakeFiles/MyQtApp.dir/mainwindow.cpp.obj -c D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/mainwindow.cpp",
+  "file": "D:/BaiduSyncdisk/vn/wolk/QT_70x56/QMainWindow/mainwindow.cpp",
+  "output": "CMakeFiles/MyQtApp.dir/mainwindow.cpp.obj"
+}
+]
