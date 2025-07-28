@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 
 #include <qsettings.h>
 
@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     vUpdateShow();
 
     qDebug() << "main tid:MainWindow" << QThread::currentThreadId();
+    // SerialOpen()
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -354,6 +355,25 @@ void MainWindow::vInitHeatMap()
     connect(ui->btnStartPlay, &QPushButton::clicked, &this->vSerialCtr.vMapCtr, &vHeatMap::startTimedPlayback);
     connect(ui->btnNextFrame, &QPushButton::clicked, &this->vSerialCtr.vMapCtr, &vHeatMap::playbackNextFrameTimedkey);
     this->vSerialCtr.vMapCtr.ui = ui;
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this,
+            [=](int index)
+            {
+                qDebug() << "当前页索引：" << index;
+
+                if (index == 1)
+                {
+                    // 第 0 页：显示热力图
+                    // ui->verticalLayout_heatmap->addWidget(vSerialCtr.vMapCtr.m_customPlot);
+                    ui->verticalLayout_heatmap->addWidget(vSerialCtr.vMapCtr.m_customPlot);
+                }
+                else if (index == 2)
+                {
+                    // 第 1 页：显示数据表格
+                    // 可选：更新表格内容
+                    // ui->tableWidget->setItem(...);
+                    ui->verticalLayout_heatmap_3->addWidget(vSerialCtr.vMapCtr.m_customPlot);
+                }
+            });
 
     connect(ui->pushButtonCalibration2, &QPushButton::clicked,
             [&]()
@@ -394,12 +414,28 @@ void MainWindow::vInitTableView()
     ui->tableWidgetF->setRowCount(static_cast<int>(COLS));
     ui->tableWidgetF->setColumnCount(static_cast<int>(ROWS));
     // 自适应所有列和行，布满整个空间
-     ui->tableWidgetF->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-     ui->tableWidgetF->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidgetF->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidgetF->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     // 隐藏表头
     ui->tableWidgetF->horizontalHeader()->setVisible(false);
     ui->tableWidgetF->verticalHeader()->setVisible(false);
+    // 列宽自动调整选项
+    // ui->tableWidgetF->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);       // 用户可调整
+    // ui->tableWidgetF->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);             // 固定大小
+    // ui->tableWidgetF->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);           // 拉伸填充
+    // ui->tableWidgetF->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);  // 根据内容调整
+
+    // // 行高自动调整选项
+    // ui->tableWidgetF->verticalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    // ui->tableWidgetF->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    // ui->tableWidgetF->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    // ui->tableWidgetF->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->tableWidgetF->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // // 如果需要立即生效
+    // ui->tableWidgetF->updateGeometry();
+    ui->tableWidgetF->setFixedSize(3700, 1500);
     connect(ui->tableWidgetF, &QTableWidget::cellClicked,
             [=](int row, int column) { qDebug() << "Clicked cell at row:" << row << ", column:" << column; });
     connect(&this->vSerialCtr.vMapCtr, &vHeatMap::sendData, this, &MainWindow::updateFTableData);

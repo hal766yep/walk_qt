@@ -47,11 +47,11 @@ void vHeatMap::dealSegment(ActivitySegment &dealSegment, const vector<vector<dou
         std::cerr << "Error: input pressure data is empty." << std::endl;
         return;
     }
-    qDebug() << "thresholdBinarize";
+    // qDebug() << "thresholdBinarize";
 
     // Step 1: Thresholding...二值化
     auto binary = thresholdBinarize(pressureData, threshold);
-    qDebug() << "extractFootRegions";
+    // qDebug() << "extractFootRegions";
 
     // Step 2: Find connected regions
     auto largestRegion = extractFootRegions(binary, minRegionSize);
@@ -59,7 +59,7 @@ void vHeatMap::dealSegment(ActivitySegment &dealSegment, const vector<vector<dou
 
     // 初始化为两个 200x200 的布尔矩阵
     dealSegment.foot.resize(2);  // 假设有两个脚
-    qDebug() << "resize binary" << dealSegment.num_Foot;
+    // qDebug() << "resize binary" << dealSegment.num_Foot;
     for (auto &f : dealSegment.foot)
     {
         f.binary.resize(NX, std::vector<bool>(NY, false));  // 初始化每个foot的binary为200x200
@@ -71,6 +71,7 @@ void vHeatMap::dealSegment(ActivitySegment &dealSegment, const vector<vector<dou
     {
         qDebug() << "一个足迹";
         markRegionOnBinary(largestRegion[0], dealSegment.foot[0].binary);
+        qDebug() << "Area" << largestRegion[0].size() << "鞋码" << areaToShoeSize(largestRegion[0].size());
     }
     else if (dealSegment.num_Foot == 2)
     {
@@ -467,58 +468,6 @@ std::pair<QPointF, QVector2D> vHeatMap::computeMainAxisEndpoints(const std::vect
     return {centroid, axis};
 }
 
-void vHeatMap::drawAxes(const QVector2D &axis, QPointF &centroid, double length)
-{
-    /*--绘制主轴---*/
-    //    QVector2D halfVec = axis * (length / 2.0);
-    //    QPointF p1 = centroid - halfVec.toPointF();
-    //    QPointF p2 = centroid + halfVec.toPointF();
-
-    //    centroid.setX(centroid.x() / (200.0 / ROWS) - 0.5);
-    //    centroid.setY(centroid.y() / (200.0 / COLS) - 0.5);
-    //    p1.setX(p1.x() / (200.0 / ROWS) - 0.5);
-    //    p1.setY(p1.y() / (200.0 / COLS) - 0.5);
-    //    p2.setX(p2.x() / (200.0 / ROWS) - 0.5);
-    //    p2.setY(p2.y() / (200.0 / COLS) - 0.5);
-    //    // 2. 计算质心（也可在 computeMainAxisEndpoints 内部取得并返回）
-    //    const double X_MIN = 0 - 0.5, X_MAX = ROWS - 0.5;
-    //    const double Y_MIN = 0 - 0.5, Y_MAX = COLS - 0.5;
-    //    // 3. 删除旧图形
-    //    auto plot = m_customPlot;  // 或 m_colorMap->parentPlot()
-    //    if (m_hullGraph) {
-    //        plot->removePlottable(m_hullGraph);
-    //        m_hullGraph = nullptr;
-    //    }
-    //    if (m_centroidXGraph) {
-    //        plot->removePlottable(m_centroidXGraph);
-    //        m_centroidXGraph = nullptr;
-    //    }
-    //    if (m_centroidYGraph) {
-    //        plot->removePlottable(m_centroidYGraph);
-    //        m_centroidYGraph = nullptr;
-    //    }
-    //    // 4. 画主轴线
-    //    m_hullGraph = m_colorMap->parentPlot()->addGraph();
-    //    m_hullGraph->addData(p1.x(), p1.y());
-    //    m_hullGraph->addData(p2.x(), p2.y());
-    //    m_hullGraph->setPen(QPen(Qt::blue, 2));
-
-    //    // 横线（质心 y）
-    //    m_centroidXGraph = m_colorMap->parentPlot()->addGraph();
-    //    m_centroidXGraph->addData(X_MIN, centroid.y());
-    //    m_centroidXGraph->addData(X_MAX, centroid.y());
-    //    m_centroidXGraph->setPen(QPen(Qt::darkGreen, 1, Qt::DashLine));
-
-    //    // 竖线（质心 x）
-    //    m_centroidYGraph = m_colorMap->parentPlot()->addGraph();
-    //    m_centroidYGraph->addData(centroid.x(), Y_MIN);
-    //    m_centroidYGraph->addData(centroid.x(), Y_MAX);
-    //    m_centroidYGraph->setPen(QPen(Qt::darkGreen, 1, Qt::DashLine));
-
-    //    // 7. 刷新
-    //    m_colorMap->parentPlot()->replot();
-}
-
 /**
  * @brief 在二值图中查找面积最大的连通区域
  *
@@ -592,10 +541,10 @@ std::vector<std::pair<int, int>> vHeatMap::findLargestRegion(const std::vector<s
 std::vector<std::vector<std::pair<int, int>>> vHeatMap::extractFootRegions(const std::vector<std::vector<bool>> &binary,
                                                                            size_t minRegionSize)
 {
-    qDebug() << "findConnectedRegions";
+    // qDebug() << "findConnectedRegions";
 
     auto regions = findConnectedRegions(binary, 0);  // 全都找出来
-    qDebug() << "regions size:" << regions.size();
+    // qDebug() << "regions size:" << regions.size();
 
     if (regions.empty())
     {
@@ -629,7 +578,6 @@ std::vector<std::vector<std::pair<int, int>>> vHeatMap::extractFootRegions(const
               });
 
     std::vector<std::vector<std::pair<int, int>>> result = {};
-    qDebug() << "findConnectedRegions1";
 
     // 情况一：两个区域都够大 => 分别返回两个脚
     if (regions[0].size() > minRegionSize * 0.8 && regions[1].size() > minRegionSize * 0.8 && regions.size() >= 2)
@@ -647,19 +595,15 @@ std::vector<std::vector<std::pair<int, int>>> vHeatMap::extractFootRegions(const
     // 情况二：两个区域加起来还行 => 合并成一个脚
     else if (regions[0].size() + regions[1].size() > minRegionSize * 0.7 && regions.size() >= 2)
     {
-        qDebug() << "Connected1";
         std::vector<std::pair<int, int>> merged = regions[0];
-        qDebug() << "Connected2";
 
         if (!regions[1].empty())
         {
             merged.insert(merged.end(), regions[1].begin(), regions[1].end());
         }
 
-        qDebug() << "Connected3";
         result.push_back(merged);
     }
-    qDebug() << "extractFootRegions return";
 
     return result;
 }
@@ -869,8 +813,8 @@ void vHeatMap::splitForeAndHindByWidth(const QVector2D &axis, const QPointF &cen
             foot.extreme_lenth[3] = std::max(foot.extreme_lenth[3], temp1);
         }
     }
-    double lenth = abs(foot.extreme_lenth[0]) + abs(foot.extreme_lenth[2]);
-    double wide = abs(foot.extreme_lenth[1]) + abs(foot.extreme_lenth[3]);
+    double lenth = abs(foot.extreme_lenth[0]) + abs(foot.extreme_lenth[1]);
+    double wide = abs(foot.extreme_lenth[2]) + abs(foot.extreme_lenth[3]);
     qDebug() << "lenth" << lenth << "鞋码" << plotLengthToShoeSize(lenth);
     qDebug() << "wide" << wide << "鞋码" << plotWidthToShoeSize(wide);
 
@@ -1078,10 +1022,30 @@ QPointF calculatePressureCenterTrajectory(const std::vector<std::vector<double>>
 
     return QPointF((weightedSumY / totalPressure) / maptoplotX, (weightedSumX / totalPressure) / maptoplotY);
 }
+double vHeatMap::areaToShoeSize(double area)
+{
+    // 反推原函数的计算过程
+    double denom = (WIDTH_ELECTORDE + GAP_ELECTORDES);
+
+    // 从面积反推 area_mm2
+    double area_mm2 = area * (denom * denom) / (maptoplotX * maptoplotY);
+
+    // 从 area_mm2 反推 footLength
+    // 原公式: area_mm2 = pow(footLength, 2) * 0.273
+    // 反推: footLength = sqrt(area_mm2 / 0.273)
+    double footLength = sqrt(area_mm2 / 0.273);
+
+    // 从 footLength 反推 size
+    // 原公式: footLength = size * 5
+    // 反推: size = footLength / 5
+    int size = (int)round(footLength / 5.0);
+
+    return size;
+}
 double vHeatMap::shoeSizeToArea(int size)
 {
     // 根据中国/欧码鞋码估算脚底面积（单位：cm²）
-    double footLength = size * 5 + 50;  // mm//脚长
+    double footLength = size * 5;  // mm//脚长
     double area_mm2 = pow(footLength, 2) * 0.273;
     double denom = (WIDTH_ELECTORDE + GAP_ELECTORDES);
     double area = area_mm2 / (denom * denom) * maptoplotX * maptoplotY;
@@ -1089,41 +1053,23 @@ double vHeatMap::shoeSizeToArea(int size)
 }
 int vHeatMap::plotLengthToShoeSize(double footLength_plot)
 {
-    // 先把画布单位转换回脚长的毫米值
-    double footLength_mm = footLength_plot / maptoplotX;
-    // 原始映射：footLength_mm = size * 5 + 50
-    // ⇒ size = (footLength_mm - 50) / 5
-    double rawSize = (footLength_mm - 50.0) / 5.0;
-    // 四舍五入到最接近的整数鞋码
+    double footLength_mm = footLength_plot * maptoplotX;
+    double rawSize = (footLength_mm - 50) / 5.0;
     int shoeSize = static_cast<int>(std::floor(rawSize + 0.5));
-    // 最小保护，鞋码不小于 0
     if (shoeSize < 0)
     {
         shoeSize = 0;
     }
     return shoeSize;
 }
+
 /**
  * @brief 根据画布上的脚宽（单位与 maptoplotX 一致）估算中国/欧码鞋码
  *
  * @param footWidth_plot 脚宽在画布单位下的值（例如像素）
  * @return int           推算得到的鞋码（四舍五入）
  */
-int vHeatMap::plotWidthToShoeSize(double footWidth_plot)
-{
-    // 将画布坐标下的脚宽转换为毫米（mm）
-    double footWidth_mm = footWidth_plot / maptoplotX;
-    // 基于经验关系：footWidth ≈ 2 × size + 16
-    double rawSize = (footWidth_mm - 16.0) / 2.0;
-    // 四舍五入得到整数鞋码
-    int shoeSize = static_cast<int>(std::floor(rawSize + 0.5));
-    // 下限保护
-    if (shoeSize < 0)
-    {
-        shoeSize = 0;
-    }
-    return shoeSize;
-}
+int vHeatMap::plotWidthToShoeSize(double footWidth_plot) { return plotLengthToShoeSize(footWidth_plot * 2.5); }
 
 /**
  * @brief 提取波动最小的长度为 k 的子段
@@ -1164,4 +1110,53 @@ std::vector<double> extract_least_fluctuation(const std::vector<double> &data, i
 
     // 3. 提取并返回最好窗口
     return std::vector<double>(data.begin() + bestIdx, data.begin() + bestIdx + k);
+}
+/// @brief 更新热图数据
+void vHeatMap::updateHeatMapData(DisplayHeatMapData *data, QCPColorMap *m_colorMaptar)
+{
+    static QPointF previousPressureCenter;  // 上一帧压力中心轨迹
+    static bool hasPreviousCenter = false;  // 标记是否有之前的压力中心
+
+    // 压力矩阵
+    if (data->pressureMatrix == nullptr || data->pressureMatrix->empty() || (*data->pressureMatrix)[0].empty())
+    {
+        // qDebug() << "Pressure matrix is empty, cannot update heat map.";
+        return;
+    }
+    for (size_t i = 0; i < data->pressureMatrix->size(); ++i)
+    {
+        for (size_t j = 0; j < (*data->pressureMatrix)[i].size(); ++j)
+        {
+            m_colorMaptar->data()->setCell(i, j, (*data->pressureMatrix)[i][j]);
+        }
+    }
+    data->pressureMatrix = nullptr;  // 清除指针，避免重复标注
+
+    // 标注脚掌
+    if (data->annotatedFoot != nullptr)
+    {
+        // 标注脚掌
+        annotateFoot(*data->annotatedFoot);
+        data->annotatedFoot = nullptr;  // 清除指针，避免重复标注
+    }
+
+    // 计算压力中心轨迹
+    if (data->currentPressureCenter == nullptr)
+    {
+        // qDebug() << "Pressure center is not set, cannot draw line.";
+        hasPreviousCenter = false;  // 重置标记
+    }
+    else
+    {
+        if (hasPreviousCenter)
+        {
+            drawLine(previousPressureCenter.x(), previousPressureCenter.y(), data->currentPressureCenter->x(),
+                     data->currentPressureCenter->y(), Qt::red);
+        }
+
+        // 更新前一帧的压力中心
+        previousPressureCenter = *data->currentPressureCenter;
+        hasPreviousCenter = true;
+        data->currentPressureCenter = nullptr;  // 清除指针，保持一致性
+    }
 }

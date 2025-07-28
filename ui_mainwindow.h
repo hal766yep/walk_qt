@@ -27,6 +27,7 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTableView>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -65,7 +66,14 @@ public:
     QGridLayout *gridLayout_2;
     QGroupBox *groupBox_6;
     QGroupBox *groupBox_5;
+    QVBoxLayout *verticalLayout_12;
     QVBoxLayout *verticalLayout_heatmap;
+    QWidget *tab_7;
+    QHBoxLayout *horizontalLayout;
+    QGroupBox *groupBox_21;
+    QVBoxLayout *verticalLayout_13;
+    QVBoxLayout *verticalLayout_heatmap_3;
+    QGroupBox *groupBox_22;
     QWidget *tab_2;
     QGridLayout *gridLayout_3;
     QGroupBox *groupBox_7;
@@ -145,7 +153,17 @@ public:
     QSpacerItem *horizontalSpacer_2;
     QSpacerItem *verticalSpacer;
     QWidget *tab_6;
+    QGridLayout *gridLayout_7;
     QTableWidget *tableWidgetF;
+    QWidget *tab_15;
+    QTabWidget *tabWidget_2;
+    QWidget *tab_16;
+    QTableWidget *tableWidget;
+    QTableView *tableView;
+    QTabWidget *tabWidget_3;
+    QWidget *tab_18;
+    QWidget *tab_19;
+    QWidget *tab_17;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -153,7 +171,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1000, 1000);
+        MainWindow->resize(892, 790);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -279,12 +297,15 @@ public:
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         groupBox_6 = new QGroupBox(tab);
         groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
+        groupBox_6->setMaximumSize(QSize(350, 16777215));
 
         gridLayout_2->addWidget(groupBox_6, 0, 3, 1, 1);
 
         groupBox_5 = new QGroupBox(tab);
         groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
-        groupBox_5->setMaximumSize(QSize(222, 9999));
+        groupBox_5->setMaximumSize(QSize(350, 9999));
+        verticalLayout_12 = new QVBoxLayout(groupBox_5);
+        verticalLayout_12->setObjectName(QString::fromUtf8("verticalLayout_12"));
 
         gridLayout_2->addWidget(groupBox_5, 0, 0, 1, 1);
 
@@ -294,6 +315,34 @@ public:
         gridLayout_2->addLayout(verticalLayout_heatmap, 0, 1, 1, 2);
 
         tabWidget->addTab(tab, QString());
+        tab_7 = new QWidget();
+        tab_7->setObjectName(QString::fromUtf8("tab_7"));
+        horizontalLayout = new QHBoxLayout(tab_7);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        groupBox_21 = new QGroupBox(tab_7);
+        groupBox_21->setObjectName(QString::fromUtf8("groupBox_21"));
+        sizePolicy.setHeightForWidth(groupBox_21->sizePolicy().hasHeightForWidth());
+        groupBox_21->setSizePolicy(sizePolicy);
+        groupBox_21->setMaximumSize(QSize(350, 9999));
+        verticalLayout_13 = new QVBoxLayout(groupBox_21);
+        verticalLayout_13->setObjectName(QString::fromUtf8("verticalLayout_13"));
+
+        horizontalLayout->addWidget(groupBox_21);
+
+        verticalLayout_heatmap_3 = new QVBoxLayout();
+        verticalLayout_heatmap_3->setObjectName(QString::fromUtf8("verticalLayout_heatmap_3"));
+
+        horizontalLayout->addLayout(verticalLayout_heatmap_3);
+
+        groupBox_22 = new QGroupBox(tab_7);
+        groupBox_22->setObjectName(QString::fromUtf8("groupBox_22"));
+        sizePolicy.setHeightForWidth(groupBox_22->sizePolicy().hasHeightForWidth());
+        groupBox_22->setSizePolicy(sizePolicy);
+        groupBox_22->setMaximumSize(QSize(350, 16777215));
+
+        horizontalLayout->addWidget(groupBox_22);
+
+        tabWidget->addTab(tab_7, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QString::fromUtf8("tab_2"));
         gridLayout_3 = new QGridLayout(tab_2);
@@ -711,21 +760,52 @@ public:
         tabWidget->addTab(tab_5, QString());
         tab_6 = new QWidget();
         tab_6->setObjectName(QString::fromUtf8("tab_6"));
+        gridLayout_7 = new QGridLayout(tab_6);
+        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         tableWidgetF = new QTableWidget(tab_6);
         tableWidgetF->setObjectName(QString::fromUtf8("tableWidgetF"));
         tableWidgetF->setEnabled(true);
-        tableWidgetF->setGeometry(QRect(9, 9, 598, 764));
         sizePolicy.setHeightForWidth(tableWidgetF->sizePolicy().hasHeightForWidth());
         tableWidgetF->setSizePolicy(sizePolicy);
         tableWidgetF->setLayoutDirection(Qt::LeftToRight);
+
+        gridLayout_7->addWidget(tableWidgetF, 0, 0, 1, 1);
+
         tabWidget->addTab(tab_6, QString());
+        tab_15 = new QWidget();
+        tab_15->setObjectName(QString::fromUtf8("tab_15"));
+        tabWidget_2 = new QTabWidget(tab_15);
+        tabWidget_2->setObjectName(QString::fromUtf8("tabWidget_2"));
+        tabWidget_2->setGeometry(QRect(0, 0, 601, 391));
+        tab_16 = new QWidget();
+        tab_16->setObjectName(QString::fromUtf8("tab_16"));
+        tableWidget = new QTableWidget(tab_16);
+        tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
+        tableWidget->setGeometry(QRect(370, 140, 256, 192));
+        tableView = new QTableView(tab_16);
+        tableView->setObjectName(QString::fromUtf8("tableView"));
+        tableView->setGeometry(QRect(190, 150, 256, 192));
+        tabWidget_3 = new QTabWidget(tab_16);
+        tabWidget_3->setObjectName(QString::fromUtf8("tabWidget_3"));
+        tabWidget_3->setGeometry(QRect(130, 70, 127, 80));
+        tab_18 = new QWidget();
+        tab_18->setObjectName(QString::fromUtf8("tab_18"));
+        tabWidget_3->addTab(tab_18, QString());
+        tab_19 = new QWidget();
+        tab_19->setObjectName(QString::fromUtf8("tab_19"));
+        tabWidget_3->addTab(tab_19, QString());
+        tabWidget_2->addTab(tab_16, QString());
+        tab_17 = new QWidget();
+        tab_17->setObjectName(QString::fromUtf8("tab_17"));
+        tabWidget_2->addTab(tab_17, QString());
+        tabWidget->addTab(tab_15, QString());
 
         gridLayout_6->addWidget(tabWidget, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1000, 21));
+        menubar->setGeometry(QRect(0, 0, 892, 21));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -733,7 +813,8 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
+        tabWidget_2->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -751,7 +832,10 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainWindow", "\346\265\213\350\257\225\350\200\205\346\225\260\346\215\2561", nullptr));
         groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "right", nullptr));
         groupBox_5->setTitle(QCoreApplication::translate("MainWindow", "left", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainWindow", "Map", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainWindow", "\345\212\250\346\200\201", nullptr));
+        groupBox_21->setTitle(QCoreApplication::translate("MainWindow", "left", nullptr));
+        groupBox_22->setTitle(QCoreApplication::translate("MainWindow", "right", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_7), QCoreApplication::translate("MainWindow", "\351\235\231\346\200\201", nullptr));
         groupBox_7->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
         groupBox_9->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
         groupBox_10->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
@@ -800,6 +884,11 @@ public:
         label_steplenth->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_5), QCoreApplication::translate("MainWindow", "Config", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_6), QCoreApplication::translate("MainWindow", "\350\241\250\346\240\274", nullptr));
+        tabWidget_3->setTabText(tabWidget_3->indexOf(tab_18), QCoreApplication::translate("MainWindow", "Tab 1", nullptr));
+        tabWidget_3->setTabText(tabWidget_3->indexOf(tab_19), QCoreApplication::translate("MainWindow", "Tab 2", nullptr));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_16), QCoreApplication::translate("MainWindow", "Tab 1", nullptr));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_17), QCoreApplication::translate("MainWindow", "Tab 2", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_15), QCoreApplication::translate("MainWindow", "\351\241\265", nullptr));
     } // retranslateUi
 
 };
