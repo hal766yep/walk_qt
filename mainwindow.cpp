@@ -352,8 +352,24 @@ void MainWindow::vInitHeatMap()
                 qDebug() << "vSaveSetting.calData.x1" << vSaveSetting.calData.x1;
             });
     // 回放按键
-    connect(ui->btnStartPlay, &QPushButton::clicked, &this->vSerialCtr.vMapCtr, &vHeatMap::startTimedPlayback);
+    // connect(ui->btnStartPlay, &QPushButton::clicked, &this->vSerialCtr.vMapCtr, &vHeatMap::startTimedPlayback);
+    connect(ui->btnStartPlay, &QPushButton::clicked,
+               &this->vSerialCtr.vMapCtr,   // receiver：vHeatMap 对象
+               [this]() {                   // 捕获 this，才能访问成员
+           auto &map = this->vSerialCtr.vMapCtr;
+           if (map.all_segments.empty()) return;
+           map.startTimedPlayback(map.all_segments.back());
+       });
+
     connect(ui->btnNextFrame, &QPushButton::clicked, &this->vSerialCtr.vMapCtr, &vHeatMap::playbackNextFrameTimedkey);
+    connect(ui->pushButton_static, &QPushButton::clicked, this,
+            [this]()
+            {
+                staticTimer = QTime::currentTime();
+                qDebug() << "采集静态" << staticTimer.toString();
+            });
+    //    connect(ui->pushButton_dynamic, &QPushButton::clicked, &this->vSerialCtr.vMapCtr, &vHeatMap::coldynamic);
+
     this->vSerialCtr.vMapCtr.ui = ui;
     connect(ui->tabWidget, &QTabWidget::currentChanged, this,
             [=](int index)

@@ -12,6 +12,7 @@
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+extern QTime staticTimer;
 
 
 //校准时用的参数

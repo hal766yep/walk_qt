@@ -44,10 +44,12 @@
 using namespace std;
 #define GAP_ELECTORDES 1.0f   // 电极间距，单位：mm
 #define WIDTH_ELECTORDE 5.0f  // 电极宽度，单位：mm
+extern QTime staticTimer;
 
 /**
  * @brief 脚的结构体定义
  */
+
 typedef struct
 {
     QPointF centroid;                                         // 质心
@@ -65,6 +67,28 @@ typedef struct
     std::vector<qint64> time_gaps;
     vector<QPointF> PressureCenterTrajectory;  // 压力中心
 } Foot;
+struct ActivitySegment
+{
+    std::vector<qint64> time_gaps;
+    vector<qint64> Timestamp;
+    std::vector<std::vector<std::vector<double>>> snapshots;  //
+    std::vector<QPointF> PressureCenterTrajectory;            // 压力中心
+    std::vector<std::vector<double>> overlay;                 // 用来叠加的足
+    std::vector<std::vector<double>> fusedMaxMap;             // 每一个点都取最大值
+    quint32 max = 0;
+    quint32 maxArea = 0;
+    quint32 maxAreaValue = 0;
+    double maxValue = 0.0f;  // 最大 matrixSum 的值
+    vector<Foot> foot;
+    quint32 num_Foot;
+};
+struct DisplayHeatMapData
+{
+    std::vector<std::vector<double>> *pressureMatrix;  // 压力矩阵
+    ActivitySegment *annotatedFoot;                    // 标注脚部信息
+    QPointF *currentPressureCenter;                    // 当前压力中心轨迹
+};
+
 QPointF calculatePressureCenterTrajectory(const std::vector<std::vector<double>> &pressureMatrix);
 class vHeatMap : public QWidget
 {
@@ -170,35 +194,19 @@ class vHeatMap : public QWidget
     void clearAllLines();
     Ui::MainWindow *ui = nullptr;
     /*---回放功能---*/
-    struct ActivitySegment
-    {
-        std::vector<qint64> time_gaps;
-        vector<qint64> Timestamp;
-        std::vector<std::vector<std::vector<double>>> snapshots;  //
-        std::vector<QPointF> PressureCenterTrajectory;            // 压力中心
-        std::vector<std::vector<double>> overlay;                 // 用来叠加的足
-        std::vector<std::vector<double>> fusedMaxMap;             // 每一个点都取最大值
-        quint32 max = 0;
-        quint32 maxArea = 0;
-        quint32 maxAreaValue = 0;
-        double maxValue = 0.0f;  // 最大 matrixSum 的值
-        vector<Foot> foot;
-        quint32 num_Foot;
-    };
+
     QTimer *playbackTimer = nullptr;  // 用于时间回放
     std::vector<ActivitySegment> all_segments;
     // QPointF PRE_PressureCenterTrajectory;
     uint32_t playbackFrameIndex;             // 当前播放到哪一帧
     ActivitySegment currentPlaybackSegment;  // 当前播放段
     ActivitySegment currentSegment;          // 当前段
+    ActivitySegment staticSegment;           // 静态段
     bool isPlaybackActive;                   // 是否进入了播放状态
-    void startTimedPlayback();
+    void startTimedPlayback(ActivitySegment incurrentPlaybackSegment);
     void playbackNextFrameTimed();
     void playbackNextFrameTimedkey();
     void processActivitySegment(double matrixSum, qint64 now);
-    // std::vector<std::vector<double>> resizeBilinear2D(
-    // const std::vector<double> &src, int src_w, int src_h,
-    // std::vector<std::vector<double>> &dst, int new_w, int new_h);
     QVector<QPointF> getActivePressurePoints(double pointThreshold);
     double bilinearInterpolateAndFillColorMap();
     void calculateWeightedMatrix(std::vector<double> &channels);
@@ -206,8 +214,11 @@ class vHeatMap : public QWidget
     void drawConvexHull(const QVector<QPointF> &convexHull);
     QVector<QCPItemLine *> playbackLines;  // 线条容器
     qint64 startKeepTimestamp = 0;
-    std::vector<Foot *> foots;  // foot指针容器
+    std::vector<Foot *> foots;       // foot指针容器
+    DisplayHeatMapData HeatMapData;  // 热图数据
+    void updateHeatMapData(DisplayHeatMapData *data, QCPColorMap *m_colorMaptar);
     // void splitForeAndHindByWidth(const QVector2D &axis, const QPointF &centroid, Foot &foot);
+
     /*---回放功能end---*/
 
     /*---modelprocess---*/
@@ -235,6 +246,8 @@ class vHeatMap : public QWidget
     // void analyzeFeetContours(const vector<vector<double>> &pressureData, int threshold, int minRegionSize);
     void dealSegment(ActivitySegment &dealSegment, const vector<vector<double>> &pressureData, int threshold,
                      int minRegionSize);
+    void dealSnapshots(ActivitySegment &dealSegment);
+
     vector<vector<bool>> thresholdBinarize(const vector<vector<double>> &pressureData, int threshold);
     vector<pair<int, int>> bfsRegion(const vector<vector<bool>> &binary, int startX, int startY,
                                      vector<vector<bool>> &visited);
@@ -246,6 +259,7 @@ class vHeatMap : public QWidget
     double resizeBilinear2D(const vector<double> &src, int src_w, int src_h, vector<std::vector<double>> &dst,
                             int new_w, int new_h);
     double shoeSizeToArea(int size);
+    double areaToShoeSize(double area);
     int plotLengthToShoeSize(double footLength_plot);
     int plotWidthToShoeSize(double footWidth_plot);
 

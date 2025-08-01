@@ -435,60 +435,39 @@ void vHeatMap::timerStop(void)
  */
 void vHeatMap::calMatrix(std::vector<double> &channels)
 {
-    // if (isPlaybackActive == 1) return;
-    qDebug() << "new frame";
+    // ---------接收处理数据----------//
     threshold_filter = 10;
-    // 第一步：根据通道数据，计算权重矩阵 m_matrix1（原始网格维度）
-    // calculateWeightedMatrix(channels);
-    erodeAndDilate(channels);                        // 腐蚀膨胀
-    applyHeatMapFilter(channels, threshold_filter);  // 历史滤波
-    // 第二步：对 m_matrix1 做双线性插值，生成细分后的
-    // m_matrix，并更新图像数据（若非回放） 同时返回总压力值（矩阵总和） double
-    // matrixSum = bilinearInterpolateAndFillColorMap();
-    // 直接双线性插值，
+    erodeAndDilate(channels);                                                 // 腐蚀膨胀
+    applyHeatMapFilter(channels, threshold_filter);                           // 历史滤波
     double matrixSum = resizeBilinear2D(channels, 56, 70, m_matrix, NY, NX);  // m_matrix传给下面
-    // 数据滤波结束，开始分析
-    //  第三步：提取有效压力点（值大于阈值的坐标），用于轮廓提取
-    //  QVector<QPointF> activePoints = getActivePressurePoints(500.0);
     ActivitySegment gather;
     if (!isPlaybackActive)
     {
-        qDebug() << "dealSegment";
         dealSegment(gather, m_matrix, 0, shoeSizeToArea(36));
-        qDebug() << "classifyLeftRight";
         classifyLeftRight(gather);
-        qDebug() << "annotateFoot";
         /*----标注脚尖和左右脚---*/
-        annotateFoot(gather);
+        HeatMapData.pressureMatrix = &m_matrix;  // 更新热图数据
+        HeatMapData.annotatedFoot = &gather;     // 更新脚部信息
     }
-    // 第四步：基于有效点计算凸包（即该帧压力的几何边界轮廓）
-    //    QVector<QPointF> convexHull = computeConvexHull(activePoints);
-    //    drawConvexHull(convexHull);
-    // 计算压力中心
-    //    PressureCenterTrajectory =
-    //    calculatePressureCenterTrajectory(this->vSerialCtr.vMapCtr.m_channelAxis,
-    //    pressFData);
-    //    ui->lineEditPressureCenterTrajectory->setText(QString("(%1,
-    //    %2)").arg(PressureCenterTrajectory.x(),0,'f',2).arg(PressureCenterTrajectory.y(),0,'f',2));
 
-    // 第五步：记录当前时间戳，用于判断动作段的起止//显示帧率
+    //  -------------记录当 前时间戳/显示帧率----------//
     QTime time = QTime::currentTime();
     qint64 now = time.msec() + time.second() * 1000 + time.minute() * 60000 + time.hour() * 3600000;
     static qint64 now1 = now;
     double fps = 1000.0f / (now - now1);
     now1 = now;
-
     ui->label_FPS->setText(QString("%1").arg(fps, 0, 'f', 2));
 
-    // 第六步：判断是否触发新动作段，或记录当前段信息（如最大值、间隔、快照等）
-    qDebug() << "processActivitySegment";
+    // ------处理动作段，计算压力中心轨迹----------//
     processActivitySegment(matrixSum, now);
+    // ----------刷新页面-----------------//
+    updateHeatMapData(&HeatMapData, m_colorMap);  // 更新热力图数据
+
     m_colorMap->data()->setCell(NX - 1, NY - 1, 66);
-    m_customPlot->replot();
 }
 //--时间间隔播放--
 //--开始播放按钮--
-void vHeatMap::startTimedPlayback()
+void vHeatMap::startTimedPlayback(ActivitySegment incurrentPlaybackSegment)
 {
     if (!playbackTimer)
     {
@@ -500,12 +479,7 @@ void vHeatMap::startTimedPlayback()
     // 点击“开始播放” → 初始化并播放第一帧
     if (currentText == "开始播放")
     {
-        if (all_segments.empty())
-        {
-            qDebug() << "No segments recorded.";
-            return;
-        }
-        currentPlaybackSegment = all_segments.back();
+        currentPlaybackSegment = incurrentPlaybackSegment;
 
         if (currentPlaybackSegment.snapshots.empty())
         {
@@ -517,7 +491,7 @@ void vHeatMap::startTimedPlayback()
         ui->btnStartPlay->setText("暂停播放");
         ui->btnNextFrame->setText("退出播放");
         // ------标注脚掌
-        annotateFoot(currentPlaybackSegment);
+        HeatMapData.annotatedFoot = &currentPlaybackSegment;  // 更新热图数据
 
         playbackNextFrameTimed();  // 显示第一帧
 
@@ -554,6 +528,8 @@ void vHeatMap::startTimedPlayback()
 
 void vHeatMap::playbackNextFrameTimed()
 {
+    qDebug() << "playbackFrameIndex:" << playbackFrameIndex
+             << "currentPlaybackSegment.snapshots.size():" << currentPlaybackSegment.snapshots.size();
     if (playbackFrameIndex >= currentPlaybackSegment.snapshots.size())
     {
         ui->btnStartPlay->setText("结束播放");
@@ -563,39 +539,22 @@ void vHeatMap::playbackNextFrameTimed()
         // 改为合并的画面
         // m_matrix = currentPlaybackSegment.overlay;
         // 改为融合最大的画面
-        m_matrix = currentPlaybackSegment.fusedMaxMap;
-        for (size_t i = 0; i < m_matrix.size(); ++i)
-        {
-            for (size_t j = 0; j < m_matrix[i].size(); ++j)
-            {
-                m_colorMap->data()->setCell(i, j, m_matrix[i][j]);
-            }
-        }
-        savePng();  // 保存当前热图为PNG
+        HeatMapData.pressureMatrix = &currentPlaybackSegment.fusedMaxMap;  // 更新热图数据
+        // savePng();  // 保存当前热图为PNG
     }
     else
     {
-        m_matrix = currentPlaybackSegment.snapshots[playbackFrameIndex];
+        qDebug() << "currentPlaybackSegment.snapshots:";
+        HeatMapData.pressureMatrix = &currentPlaybackSegment.snapshots[playbackFrameIndex];  // 更新热图数据
     }
-    for (size_t i = 0; i < m_matrix.size(); ++i)
-    {
-        for (size_t j = 0; j < m_matrix[i].size(); ++j)
-        {
-            m_colorMap->data()->setCell(i, j, m_matrix[i][j]);
-        }
-    }
-    m_customPlot->replot();
-    // qDebug() << "Displayed frame" << playbackFrameIndex;
 
     int interval = 110;  // 默认
     if (playbackFrameIndex < currentPlaybackSegment.time_gaps.size())
     {
         interval = currentPlaybackSegment.time_gaps[playbackFrameIndex];
         if (playbackFrameIndex != 0)
-            drawLine(currentPlaybackSegment.PressureCenterTrajectory[playbackFrameIndex - 1].x(),
-                     currentPlaybackSegment.PressureCenterTrajectory[playbackFrameIndex - 1].y(),
-                     currentPlaybackSegment.PressureCenterTrajectory[playbackFrameIndex].x(),
-                     currentPlaybackSegment.PressureCenterTrajectory[playbackFrameIndex].y(), Qt::red);
+            HeatMapData.currentPressureCenter =
+                &currentPlaybackSegment.PressureCenterTrajectory[playbackFrameIndex];  // 更新热图数据
     }
     if (playbackFrameIndex < currentPlaybackSegment.snapshots.size() && ui->btnStartPlay->text() == "暂停播放")
     {
@@ -606,6 +565,7 @@ void vHeatMap::playbackNextFrameTimed()
         playbackTimer->stop();
     }
     playbackFrameIndex++;
+    qDebug() << "playbackFrameIndex:" << playbackFrameIndex << "end of playbackNextFrameTimed";
 }
 //---播放下一帧按钮--//
 void vHeatMap::playbackNextFrameTimedkey()
@@ -819,7 +779,6 @@ double vHeatMap::bilinearInterpolateAndFillColorMap()
             }
         }
     }
-
     return matrixSum;
 }
 
@@ -830,6 +789,7 @@ void vHeatMap::processActivitySegment(double matrixSum, qint64 now)
     double threshold = 5000;
 
     extern QPointF PressureCenterTrajectory;
+    static int staticcol = 0;
 
     if (matrixSum > threshold)
     {
@@ -859,8 +819,8 @@ void vHeatMap::processActivitySegment(double matrixSum, qint64 now)
             all_segments[currentSegmentIndex].maxValue = matrixSum;
         }
         // 计算重心
-        PressureCenterTrajectory = calculatePressureCenterTrajectory(m_matrix);
-        all_segments[currentSegmentIndex].PressureCenterTrajectory.push_back(PressureCenterTrajectory);
+        // PressureCenterTrajectory = calculatePressureCenterTrajectory(m_matrix);
+        // all_segments[currentSegmentIndex].PressureCenterTrajectory.push_back(PressureCenterTrajectory);
 
         qDebug() << "Segment" << currentSegmentIndex << "Step" << all_segments[currentSegmentIndex].time_gaps.size()
                  << "Gap:" << gap << "MatrixSum:" << matrixSum;
@@ -871,13 +831,12 @@ void vHeatMap::processActivitySegment(double matrixSum, qint64 now)
         {
             // 动作段结束，进行处理
             //  1、叠加足印
-            qDebug() << "keep segment";
+            // qDebug() << "keep segment";
             startKeepTimestamp = 0;  // 动作段结束
             const auto &snapshots = all_segments[currentSegmentIndex].snapshots;
 
             size_t h = snapshots[0].size();
             size_t w = snapshots[0][0].size();
-            size_t frameCount = snapshots.size();
             all_segments[currentSegmentIndex].overlay.assign(h, std::vector<double>(w, 0.0));
             all_segments[currentSegmentIndex].fusedMaxMap.assign(h, std::vector<double>(w, 0.0));
             // 叠加所有帧
@@ -892,13 +851,8 @@ void vHeatMap::processActivitySegment(double matrixSum, qint64 now)
                 }
             }
             // 2、过滤非足印
-            // 二值化
-            qDebug() << "deal segment";
-
             dealSegment(all_segments[currentSegmentIndex], all_segments[currentSegmentIndex].overlay, 0,
                         shoeSizeToArea(36));
-            classifyLeftRight(all_segments[currentSegmentIndex]);
-
             if (all_segments[currentSegmentIndex].num_Foot == 0)
             {
                 qDebug() << "none foot";
@@ -907,69 +861,10 @@ void vHeatMap::processActivitySegment(double matrixSum, qint64 now)
                 qDebug() << "删除这一帧";
                 return;
             }
-
             classifyLeftRight(all_segments[currentSegmentIndex]);
             qDebug() << "过滤非足迹";  // 用于回放
             bool keep_key[2];
-            for (size_t i = 0; i < all_segments[currentSegmentIndex].snapshots.size(); ++i)  // 遍历当前帧的每一张闪照
-            {
-                keep_key[0] = 0;
-                keep_key[1] = 0;
-                for (size_t j = 0; j < all_segments[currentSegmentIndex].snapshots[i].size(); ++j)
-                {
-                    for (size_t k = 0; k < all_segments[currentSegmentIndex].snapshots[i][j].size(); ++k)
-                    {
-                        if (!all_segments[currentSegmentIndex].foot[0].binary[j][k] &&
-                            !all_segments[currentSegmentIndex].foot[1].binary[j][k])
-                        {
-                            all_segments[currentSegmentIndex].snapshots[i][j][k] = 0;
-                            all_segments[currentSegmentIndex].overlay[j][k] = 0;
-                        }
-                        else if (all_segments[currentSegmentIndex].snapshots[i][j][k] > 0)
-                        {
-                            if (all_segments[currentSegmentIndex].foot[0].binary[j][k])
-                            {
-                                keep_key[0] = 1;
-                            }
-                            else if (all_segments[currentSegmentIndex].foot[1].binary[j][k])
-                            {
-                                keep_key[1] = 1;
-                            }
-                            //
-                            all_segments[currentSegmentIndex].fusedMaxMap[j][k] =
-                                max(all_segments[currentSegmentIndex].fusedMaxMap[j][k],
-                                    all_segments[currentSegmentIndex].snapshots[i][j][k]);
-                        }
-                    }
-                }
-                qDebug() << "Filter non-footprints";  // 用于回放
-
-                for (int f = 0; f < 2; ++f)  // 保存每一张闪照到foot中
-                {
-                    if (keep_key[f])
-                    {
-                        qDebug() << "keep_key" << f;  // 用于回放
-
-                        all_segments[currentSegmentIndex].foot[f].Timestamp.push_back(
-                            all_segments[currentSegmentIndex].Timestamp[i]);
-                        all_segments[currentSegmentIndex].foot[f].snapshots.push_back(
-                            all_segments[currentSegmentIndex].snapshots[i]);
-                        for (size_t j = 0; j < all_segments[currentSegmentIndex].snapshots[i].size(); ++j)
-                        {
-                            for (size_t k = 0; k < all_segments[currentSegmentIndex].snapshots[i][j].size(); ++k)
-                            {
-                                if (all_segments[currentSegmentIndex].foot[f].binary[j][k] != 1)
-                                    all_segments[currentSegmentIndex].foot[f].snapshots.back()[j][k] = 0;
-                            }
-                        }
-                        qDebug() << "PressureCenterTrajectory";
-
-                        all_segments[currentSegmentIndex].foot[f].PressureCenterTrajectory.push_back(
-                            calculatePressureCenterTrajectory(
-                                all_segments[currentSegmentIndex].foot[f].snapshots.back()));
-                    }
-                }
-            }
+            dealSnapshots(all_segments[currentSegmentIndex]);
             // if (all_segments[currentSegmentIndex].num_Foot == 2)
             // {
             //     // 计算脚间距
@@ -1061,6 +956,63 @@ void vHeatMap::processActivitySegment(double matrixSum, qint64 now)
             }
         }
     }
+    // 处理静态段
+    if (!staticTimer.isNull())
+    {
+        if (staticcol == 0)  // 开始保存静态
+        {
+            staticcol = 1;           // 标记已开始静态
+            startKeepTimestamp = 0;  // 清空开始时间戳
+        }
+        else if (QTime::currentTime() > staticTimer.addSecs(10))  // 处理静态
+        {
+            staticTimer = QTime();  // 清空
+            qDebug() << "Static 采集完成";
+            // staticSegment = all_segments[currentSegmentIndex]
+            // 判断是否有足够的元素
+            if (all_segments[currentSegmentIndex].snapshots.size() < 200)
+            {
+                qDebug() << "元素不足200个,退出程序。";
+                return;
+            }
+
+            // 有足够元素才执行复制
+            staticSegment = all_segments[currentSegmentIndex];
+
+            const auto &snapshots = staticSegment.snapshots;
+
+            size_t h = snapshots[0].size();
+            size_t w = snapshots[0][0].size();
+            staticSegment.overlay.assign(h, std::vector<double>(w, 0.0));
+            staticSegment.fusedMaxMap.assign(h, std::vector<double>(w, 0.0));
+            // 叠加所有帧
+            for (const auto &frame : snapshots)
+            {
+                for (size_t j = 0; j < h; ++j)
+                {
+                    for (size_t k = 0; k < w; ++k)
+                    {
+                        staticSegment.overlay[j][k] += frame[j][k];
+                    }
+                }
+            }
+            // 2、过滤非足印
+            dealSegment(staticSegment, staticSegment.overlay, 0, shoeSizeToArea(36));
+            if (staticSegment.num_Foot == 0)
+            {
+                qDebug() << "none foot";
+                all_segments.pop_back();
+                currentSegmentIndex--;
+                qDebug() << "删除这一帧";
+                return;
+            }
+            classifyLeftRight(staticSegment);
+            qDebug() << "过滤非足迹";  // 用于回放
+            bool keep_key[2];
+            dealSnapshots(staticSegment);
+            startTimedPlayback(staticSegment);  // 开始播放静态段
+        }
+    }
 }
 // 绘制轮廓线（凸包）
 void vHeatMap::drawConvexHull(const QVector<QPointF> &convexHull)
@@ -1136,7 +1088,6 @@ double vHeatMap::resizeBilinear2D(const vector<double> &src, int src_w, int src_
 
             dst[i][j] = value;
             matrixSum += value;
-            if (!isPlaybackActive && m_colorMap) m_colorMap->data()->setCell(i, j, value);
         }
     }
     // erodeAndDilate(dst);  // 腐蚀膨胀

@@ -1,4 +1,4 @@
-// #include <QLineEdit>
+﻿// #include <QLineEdit>
 // #include <QPushButton>
 // #include <QTime>
 #include <QDebug>
@@ -37,8 +37,6 @@ const int dy[4] = {0, 0, 1, -1};
  *  3. 判断左右脚（classifyLeftRight）
  *  4. 提取轮廓（extractContour）
  */
-// void vHeatMap::dealSegment() {}
-
 void vHeatMap::dealSegment(ActivitySegment &dealSegment, const vector<vector<double>> &pressureData, int threshold,
                            int minRegionSize)
 {
@@ -90,6 +88,64 @@ void vHeatMap::dealSegment(ActivitySegment &dealSegment, const vector<vector<dou
     // Step 3: Classify left and right foot
 
     // drawAxes(axis, centroid, 120.0);
+}
+void vHeatMap::dealSnapshots(ActivitySegment &dealSegment)
+{
+    bool keep_key[2];
+    for (size_t i = 0; i < dealSegment.snapshots.size(); ++i)  // 遍历当前帧的每一张闪照
+    {
+        keep_key[0] = 0;
+        keep_key[1] = 0;
+        for (size_t j = 0; j < dealSegment.snapshots[i].size(); ++j)
+        {
+            for (size_t k = 0; k < dealSegment.snapshots[i][j].size(); ++k)
+            {
+                if (!dealSegment.foot[0].binary[j][k] && !dealSegment.foot[1].binary[j][k])
+                {
+                    dealSegment.snapshots[i][j][k] = 0;
+                    dealSegment.overlay[j][k] = 0;
+                }
+                else if (dealSegment.snapshots[i][j][k] > 0)
+                {
+                    if (dealSegment.foot[0].binary[j][k])
+                    {
+                        keep_key[0] = 1;
+                    }
+                    else if (dealSegment.foot[1].binary[j][k])
+                    {
+                        keep_key[1] = 1;
+                    }
+                    //
+                    dealSegment.fusedMaxMap[j][k] = max(dealSegment.fusedMaxMap[j][k], dealSegment.snapshots[i][j][k]);
+                }
+            }
+        }
+        // qDebug() << "Filter non-footprints";  // 用于回放
+
+        for (int f = 0; f < 2; ++f)  // 保存每一张闪照到foot中
+        {
+            if (keep_key[f])
+            {
+                // qDebug() << "keep_key" << f;  // 用于回放
+
+                dealSegment.foot[f].Timestamp.push_back(dealSegment.Timestamp[i]);
+                dealSegment.foot[f].snapshots.push_back(dealSegment.snapshots[i]);
+                for (size_t j = 0; j < dealSegment.snapshots[i].size(); ++j)
+                {
+                    for (size_t k = 0; k < dealSegment.snapshots[i][j].size(); ++k)
+                    {
+                        if (dealSegment.foot[f].binary[j][k] != 1) dealSegment.foot[f].snapshots.back()[j][k] = 0;
+                    }
+                }
+                // qDebug() << "PressureCenterTrajectory";
+
+                dealSegment.foot[f].PressureCenterTrajectory.push_back(
+                    calculatePressureCenterTrajectory(dealSegment.foot[f].snapshots.back()));
+            }
+        }
+        dealSegment.PressureCenterTrajectory.push_back(
+            calculatePressureCenterTrajectory(dealSegment.snapshots[i]));  // 过滤完再计算当前帧的压力中心轨迹
+    }
 }
 // 1. 阈值二值化（返回二值矩阵）
 vector<vector<bool>> vHeatMap::thresholdBinarize(const vector<vector<double>> &pressureData, int threshold)
@@ -552,8 +608,8 @@ std::vector<std::vector<std::pair<int, int>>> vHeatMap::extractFootRegions(const
     }
 
     // 找出前两个最大区域
-    size_t maxSize = 0, secondSize = 0;
-    int maxIdx = -1, secondIdx = -1;
+    //    size_t maxSize = 0, secondSize = 0;
+    //    int maxIdx = -1, secondIdx = -1;
 
     // for (int i = 0; i < static_cast<int>(regions.size()); ++i)
     // {
@@ -996,7 +1052,7 @@ QPointF calculatePressureCenterTrajectory(const std::vector<std::vector<double>>
     {
         throw std::invalid_argument("Pressure matrix is empty.");
     }
-    int width = pressureMatrix[0].size();
+    auto width = pressureMatrix[0].size();
     if (width == 0)
     {
         throw std::invalid_argument("Pressure matrix has empty rows.");
@@ -1007,7 +1063,7 @@ QPointF calculatePressureCenterTrajectory(const std::vector<std::vector<double>>
         {
             throw std::invalid_argument("All rows in the pressure matrix must have the same width.");
         }
-        for (int j = 0; j < width; ++j)
+        for (unsigned int j = 0; j < width; ++j)
         {
             double pressure = pressureMatrix[i][j];
             weightedSumX += j * pressure;  // j is x
@@ -1017,7 +1073,7 @@ QPointF calculatePressureCenterTrajectory(const std::vector<std::vector<double>>
     }
     if (totalPressure == 0.0)
     {
-        throw std::runtime_error("Total pressure is zero. Cannot compute center.");
+        qDebug() << ("Total pressure is zero. Cannot compute center.");
     }
 
     return QPointF((weightedSumY / totalPressure) / maptoplotX, (weightedSumX / totalPressure) / maptoplotY);
@@ -1160,3 +1216,18 @@ void vHeatMap::updateHeatMapData(DisplayHeatMapData *data, QCPColorMap *m_colorM
         data->currentPressureCenter = nullptr;  // 清除指针，保持一致性
     }
 }
+QTime staticTimer;
+
+// void vHeatMap::colstatic(void)
+// {
+//     static startime = QTime::currentTime();
+//     QTimer *statictimer = nullptr;  // 用于时间回放
+
+//     if (!statictimer)
+//     {
+//         statictimer = new QTimer(this);
+//         connect(statictimer, &QTimer::timeout, this, &vHeatMap::colstatic);
+//     }
+//     playbackTimer->start(10000);  // 启动下一帧的定时器
+// }
+// void vHeatMap::coldynamic(void) {}
