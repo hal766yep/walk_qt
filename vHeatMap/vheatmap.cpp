@@ -963,54 +963,78 @@ void vHeatMap::processActivitySegment(double matrixSum, qint64 now)
         {
             staticcol = 1;           // 标记已开始静态
             startKeepTimestamp = 0;  // 清空开始时间戳
+            isPlaybackActive = true;  // 开始播放静态段
+            staticSegment.overlay.assign(ROWS * maptoplotX, std::vector<double>(COLS * maptoplotY, 0.0));
         }
-        else if (QTime::currentTime() > staticTimer.addSecs(10))  // 处理静态
+        else if (QTime::currentTime() > staticTimer.addSecs(5))  // 处理静态
         {
             staticTimer = QTime();  // 清空
             qDebug() << "Static 采集完成";
+            staticcol = 0;  // 重置静态标记
             // staticSegment = all_segments[currentSegmentIndex]
             // 判断是否有足够的元素
-            if (all_segments[currentSegmentIndex].snapshots.size() < 200)
-            {
-                qDebug() << "元素不足200个,退出程序。";
-                return;
-            }
+            // if (all_segments[currentSegmentIndex].snapshots.size() < 200)
+            // {
+            //     qDebug() << "元素不足200个,退出程序。";
+            //     return;
+            // }
 
-            // 有足够元素才执行复制
-            staticSegment = all_segments[currentSegmentIndex];
+            // // 有足够元素才执行复制
+            // staticSegment = all_segments[currentSegmentIndex];
 
-            const auto &snapshots = staticSegment.snapshots;
+            // const auto &snapshots = staticSegment.snapshots;
 
-            size_t h = snapshots[0].size();
-            size_t w = snapshots[0][0].size();
-            staticSegment.overlay.assign(h, std::vector<double>(w, 0.0));
-            staticSegment.fusedMaxMap.assign(h, std::vector<double>(w, 0.0));
-            // 叠加所有帧
-            for (const auto &frame : snapshots)
-            {
-                for (size_t j = 0; j < h; ++j)
-                {
-                    for (size_t k = 0; k < w; ++k)
-                    {
-                        staticSegment.overlay[j][k] += frame[j][k];
-                    }
-                }
+            // size_t h = snapshots[0].size();
+            // size_t w = snapshots[0][0].size();
+            // staticSegment.overlay.assign(h, std::vector<double>(w, 0.0));
+            // staticSegment.fusedMaxMap.assign(h, std::vector<double>(w, 0.0));
+            // // 叠加所有帧
+            // for (const auto &frame : snapshots)
+            // {
+            //     for (size_t j = 0; j < h; ++j)
+            //     {
+            //         for (size_t k = 0; k < w; ++k)
+            //         {
+            //             staticSegment.overlay[j][k] += frame[j][k];
+            //         }
+            //     }
+            // }
+            // // 2、过滤非足印
+            // dealSegment(staticSegment, staticSegment.overlay, 0, shoeSizeToArea(36));
+            // if (staticSegment.num_Foot == 0)
+            // {
+            //     qDebug() << "none foot";
+            //     all_segments.pop_back();
+            //     currentSegmentIndex--;
+            //     qDebug() << "删除这一帧";
+            //     return;
+            // }
+            // classifyLeftRight(staticSegment);
+            // qDebug() << "过滤非足迹";  // 用于回放
+            // bool keep_key[2];
+            // dealSnapshots(staticSegment);
+            // startTimedPlayback(staticSegment);  // 开始播放静态段
+            // test--显示截图
+            //  1. 截图 QCustomPlot 到 QPixmap
+
+            QPixmap pixmap = m_customPlot->toPixmap(ROWS * maptoplotX, COLS * maptoplotY);  // 分辨率可以调整
+
+            // 2. 创建 QLabel 显示截图
+            QLabel *colorMapLabel = new QLabel;
+            colorMapLabel->setPixmap(pixmap);
+            // colorMapLabel->setScaledContents(true);  // 让图像适应 QLabel 大小
+            // colorMapLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+            // 3. 添加到 verticalLayout_2
+            ui->verticalLayout_2->addWidget(colorMapLabel);
+            isPlaybackActive = false;
             }
-            // 2、过滤非足印
-            dealSegment(staticSegment, staticSegment.overlay, 0, shoeSizeToArea(36));
-            if (staticSegment.num_Foot == 0)
+        // if (staticcol == 1)  // 开始保存静态
             {
-                qDebug() << "none foot";
-                all_segments.pop_back();
-                currentSegmentIndex--;
-                qDebug() << "删除这一帧";
-                return;
-            }
-            classifyLeftRight(staticSegment);
-            qDebug() << "过滤非足迹";  // 用于回放
-            bool keep_key[2];
-            dealSnapshots(staticSegment);
-            startTimedPlayback(staticSegment);  // 开始播放静态段
+            qDebug() << "Static Timer is running";
+            fuseMaxMap(staticSegment.overlay, m_matrix);
+            // 显示
+            HeatMapData.pressureMatrix = &staticSegment.overlay;  // 更新热图数据
         }
     }
 }

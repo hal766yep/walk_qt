@@ -44,7 +44,12 @@ public:
     QGridLayout *gridLayout_10;
     QGroupBox *groupBox_4;
     QGridLayout *gridLayout_9;
-    QSpacerItem *horizontalSpacer_4;
+    QVBoxLayout *verticalLayout_7;
+    QLabel *label_17;
+    QLabel *label_18;
+    QLabel *label_19;
+    QLabel *label_20;
+    QLabel *label_21;
     QVBoxLayout *verticalLayout_6;
     QHBoxLayout *horizontalLayout_14;
     QLineEdit *lineEditMaxPressPoint_3;
@@ -53,15 +58,13 @@ public:
     QLineEdit *lineEditArea_3;
     QLineEdit *lineEditPressureCenterTrajectory_3;
     QLineEdit *lineEditTotalgePress_3;
-    QSpacerItem *horizontalSpacer_3;
-    QVBoxLayout *verticalLayout_7;
-    QLabel *label_17;
-    QLabel *label_18;
-    QLabel *label_19;
-    QLabel *label_20;
-    QLabel *label_21;
-    QSpacerItem *verticalSpacer_3;
     QSpacerItem *verticalSpacer_4;
+    QSpacerItem *horizontalSpacer_4;
+    QSpacerItem *verticalSpacer_3;
+    QSpacerItem *horizontalSpacer_3;
+    QHBoxLayout *horizontalLayout_4;
+    QPushButton *pushButton_static;
+    QPushButton *pushButton_dynamic;
     QWidget *tab;
     QGridLayout *gridLayout_2;
     QGroupBox *groupBox_6;
@@ -72,8 +75,11 @@ public:
     QHBoxLayout *horizontalLayout;
     QGroupBox *groupBox_21;
     QVBoxLayout *verticalLayout_13;
+    QVBoxLayout *verticalLayout_2;
     QVBoxLayout *verticalLayout_heatmap_3;
     QGroupBox *groupBox_22;
+    QVBoxLayout *verticalLayout_8;
+    QVBoxLayout *verticalLayout;
     QWidget *tab_2;
     QGridLayout *gridLayout_3;
     QGroupBox *groupBox_7;
@@ -113,45 +119,45 @@ public:
     QSpacerItem *horizontalSpacer;
     QWidget *tab_5;
     QFormLayout *formLayout;
-    QGroupBox *groupBox;
-    QGridLayout *gridLayout;
-    QLabel *labelCom7;
-    QLabel *labelCom1;
-    QLabel *label_stepFrequency;
-    QSpinBox *spinBox;
-    QLabel *labelCom5;
-    QLabel *label_7;
-    QPushButton *btnNextFrame;
-    QPushButton *pushButtonOpen;
-    QLabel *labelCom2;
-    QLabel *label_8;
-    QLabel *label_stancetimeL;
-    QLabel *label_stancetimeR;
-    QLabel *label_walkspeed;
-    QLabel *labelCom3;
-    QComboBox *comboBoxCom7;
-    QPushButton *pushButtonExportData;
-    QLabel *label_FPS;
-    QCheckBox *checkBox_showChannel;
-    QComboBox *comboBoxCom2;
-    QLabel *label_3;
-    QLabel *label_15;
-    QLabel *label_10;
-    QComboBox *comboBoxCom6;
-    QLabel *label_stepwidth;
-    QComboBox *comboBoxCom3;
-    QComboBox *comboBoxCom5;
-    QLabel *labelCom6;
-    QLabel *labelCom4;
-    QComboBox *comboBoxCom4;
-    QPushButton *btnStartPlay;
-    QComboBox *comboBoxCom1;
-    QLabel *label_2;
-    QLabel *label_9;
-    QLabel *label_16;
-    QLabel *label_steplenth;
     QSpacerItem *horizontalSpacer_2;
     QSpacerItem *verticalSpacer;
+    QGroupBox *groupBox;
+    QGridLayout *gridLayout;
+    QComboBox *comboBoxCom5;
+    QLabel *labelCom4;
+    QLabel *labelCom7;
+    QLabel *label_stepwidth;
+    QCheckBox *checkBox_showChannel;
+    QLabel *label_8;
+    QComboBox *comboBoxCom3;
+    QLabel *label_16;
+    QLabel *label_2;
+    QLabel *labelCom5;
+    QLabel *labelCom6;
+    QPushButton *pushButtonExportData;
+    QLabel *label_15;
+    QLabel *label_9;
+    QLabel *label_7;
+    QLabel *label_stancetimeL;
+    QPushButton *btnNextFrame;
+    QComboBox *comboBoxCom6;
+    QLabel *label_10;
+    QPushButton *btnStartPlay;
+    QComboBox *comboBoxCom4;
+    QLabel *labelCom2;
+    QSpinBox *spinBox;
+    QComboBox *comboBoxCom7;
+    QComboBox *comboBoxCom2;
+    QLabel *labelCom3;
+    QLabel *label_FPS;
+    QPushButton *pushButtonOpen;
+    QLabel *label_3;
+    QLabel *label_walkspeed;
+    QLabel *label_stancetimeR;
+    QLabel *label_steplenth;
+    QLabel *label_stepFrequency;
+    QLabel *labelCom1;
+    QComboBox *comboBoxCom1;
     QWidget *tab_6;
     QGridLayout *gridLayout_7;
     QTableWidget *tableWidgetF;
@@ -195,9 +201,35 @@ public:
         groupBox_4->setSizePolicy(sizePolicy);
         gridLayout_9 = new QGridLayout(groupBox_4);
         gridLayout_9->setObjectName(QString::fromUtf8("gridLayout_9"));
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        verticalLayout_7 = new QVBoxLayout();
+        verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
+        label_17 = new QLabel(groupBox_4);
+        label_17->setObjectName(QString::fromUtf8("label_17"));
 
-        gridLayout_9->addItem(horizontalSpacer_4, 1, 0, 1, 1);
+        verticalLayout_7->addWidget(label_17);
+
+        label_18 = new QLabel(groupBox_4);
+        label_18->setObjectName(QString::fromUtf8("label_18"));
+
+        verticalLayout_7->addWidget(label_18);
+
+        label_19 = new QLabel(groupBox_4);
+        label_19->setObjectName(QString::fromUtf8("label_19"));
+
+        verticalLayout_7->addWidget(label_19);
+
+        label_20 = new QLabel(groupBox_4);
+        label_20->setObjectName(QString::fromUtf8("label_20"));
+
+        verticalLayout_7->addWidget(label_20);
+
+        label_21 = new QLabel(groupBox_4);
+        label_21->setObjectName(QString::fromUtf8("label_21"));
+
+        verticalLayout_7->addWidget(label_21);
+
+
+        gridLayout_9->addLayout(verticalLayout_7, 1, 1, 1, 1);
 
         verticalLayout_6 = new QVBoxLayout();
         verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
@@ -245,47 +277,36 @@ public:
 
         gridLayout_9->addLayout(verticalLayout_6, 1, 2, 1, 1);
 
+        verticalSpacer_4 = new QSpacerItem(20, 100, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_9->addItem(verticalSpacer_4, 0, 2, 1, 1);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_9->addItem(horizontalSpacer_4, 1, 0, 1, 1);
+
+        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_9->addItem(verticalSpacer_3, 3, 1, 1, 1);
+
         horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         gridLayout_9->addItem(horizontalSpacer_3, 1, 3, 1, 1);
 
-        verticalLayout_7 = new QVBoxLayout();
-        verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
-        label_17 = new QLabel(groupBox_4);
-        label_17->setObjectName(QString::fromUtf8("label_17"));
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+        pushButton_static = new QPushButton(groupBox_4);
+        pushButton_static->setObjectName(QString::fromUtf8("pushButton_static"));
 
-        verticalLayout_7->addWidget(label_17);
+        horizontalLayout_4->addWidget(pushButton_static);
 
-        label_18 = new QLabel(groupBox_4);
-        label_18->setObjectName(QString::fromUtf8("label_18"));
+        pushButton_dynamic = new QPushButton(groupBox_4);
+        pushButton_dynamic->setObjectName(QString::fromUtf8("pushButton_dynamic"));
 
-        verticalLayout_7->addWidget(label_18);
-
-        label_19 = new QLabel(groupBox_4);
-        label_19->setObjectName(QString::fromUtf8("label_19"));
-
-        verticalLayout_7->addWidget(label_19);
-
-        label_20 = new QLabel(groupBox_4);
-        label_20->setObjectName(QString::fromUtf8("label_20"));
-
-        verticalLayout_7->addWidget(label_20);
-
-        label_21 = new QLabel(groupBox_4);
-        label_21->setObjectName(QString::fromUtf8("label_21"));
-
-        verticalLayout_7->addWidget(label_21);
+        horizontalLayout_4->addWidget(pushButton_dynamic);
 
 
-        gridLayout_9->addLayout(verticalLayout_7, 1, 1, 1, 1);
-
-        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        gridLayout_9->addItem(verticalSpacer_3, 2, 2, 1, 1);
-
-        verticalSpacer_4 = new QSpacerItem(20, 100, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout_9->addItem(verticalSpacer_4, 0, 2, 1, 1);
+        gridLayout_9->addLayout(horizontalLayout_4, 2, 1, 1, 2);
 
 
         gridLayout_10->addWidget(groupBox_4, 0, 0, 1, 1);
@@ -326,6 +347,11 @@ public:
         groupBox_21->setMaximumSize(QSize(350, 9999));
         verticalLayout_13 = new QVBoxLayout(groupBox_21);
         verticalLayout_13->setObjectName(QString::fromUtf8("verticalLayout_13"));
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+
+        verticalLayout_13->addLayout(verticalLayout_2);
+
 
         horizontalLayout->addWidget(groupBox_21);
 
@@ -339,6 +365,13 @@ public:
         sizePolicy.setHeightForWidth(groupBox_22->sizePolicy().hasHeightForWidth());
         groupBox_22->setSizePolicy(sizePolicy);
         groupBox_22->setMaximumSize(QSize(350, 16777215));
+        verticalLayout_8 = new QVBoxLayout(groupBox_22);
+        verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+
+        verticalLayout_8->addLayout(verticalLayout);
+
 
         horizontalLayout->addWidget(groupBox_22);
 
@@ -531,6 +564,14 @@ public:
         tab_5->setObjectName(QString::fromUtf8("tab_5"));
         formLayout = new QFormLayout(tab_5);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
+        horizontalSpacer_2 = new QSpacerItem(595, 674, QSizePolicy::Preferred, QSizePolicy::Minimum);
+
+        formLayout->setItem(0, QFormLayout::FieldRole, horizontalSpacer_2);
+
+        verticalSpacer = new QSpacerItem(17, 594, QSizePolicy::Minimum, QSizePolicy::Preferred);
+
+        formLayout->setItem(1, QFormLayout::LabelRole, verticalSpacer);
+
         groupBox = new QGroupBox(tab_5);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setEnabled(true);
@@ -541,6 +582,17 @@ public:
         groupBox->setSizePolicy(sizePolicy1);
         gridLayout = new QGridLayout(groupBox);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        comboBoxCom5 = new QComboBox(groupBox);
+        comboBoxCom5->setObjectName(QString::fromUtf8("comboBoxCom5"));
+        comboBoxCom5->setMinimumSize(QSize(0, 25));
+
+        gridLayout->addWidget(comboBoxCom5, 5, 3, 1, 1);
+
+        labelCom4 = new QLabel(groupBox);
+        labelCom4->setObjectName(QString::fromUtf8("labelCom4"));
+
+        gridLayout->addWidget(labelCom4, 4, 0, 1, 1);
+
         labelCom7 = new QLabel(groupBox);
         labelCom7->setObjectName(QString::fromUtf8("labelCom7"));
         QFont font1;
@@ -552,30 +604,79 @@ public:
 
         gridLayout->addWidget(labelCom7, 7, 0, 1, 1);
 
-        labelCom1 = new QLabel(groupBox);
-        labelCom1->setObjectName(QString::fromUtf8("labelCom1"));
+        label_stepwidth = new QLabel(groupBox);
+        label_stepwidth->setObjectName(QString::fromUtf8("label_stepwidth"));
 
-        gridLayout->addWidget(labelCom1, 0, 0, 1, 1);
+        gridLayout->addWidget(label_stepwidth, 15, 3, 1, 1);
 
-        label_stepFrequency = new QLabel(groupBox);
-        label_stepFrequency->setObjectName(QString::fromUtf8("label_stepFrequency"));
+        checkBox_showChannel = new QCheckBox(groupBox);
+        checkBox_showChannel->setObjectName(QString::fromUtf8("checkBox_showChannel"));
 
-        gridLayout->addWidget(label_stepFrequency, 10, 3, 1, 1);
+        gridLayout->addWidget(checkBox_showChannel, 16, 0, 1, 2);
 
-        spinBox = new QSpinBox(groupBox);
-        spinBox->setObjectName(QString::fromUtf8("spinBox"));
+        label_8 = new QLabel(groupBox);
+        label_8->setObjectName(QString::fromUtf8("label_8"));
 
-        gridLayout->addWidget(spinBox, 8, 3, 1, 1);
+        gridLayout->addWidget(label_8, 11, 0, 1, 1);
+
+        comboBoxCom3 = new QComboBox(groupBox);
+        comboBoxCom3->setObjectName(QString::fromUtf8("comboBoxCom3"));
+        comboBoxCom3->setMinimumSize(QSize(0, 25));
+
+        gridLayout->addWidget(comboBoxCom3, 3, 3, 1, 1);
+
+        label_16 = new QLabel(groupBox);
+        label_16->setObjectName(QString::fromUtf8("label_16"));
+
+        gridLayout->addWidget(label_16, 14, 0, 1, 1);
+
+        label_2 = new QLabel(groupBox);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        gridLayout->addWidget(label_2, 9, 0, 1, 1);
 
         labelCom5 = new QLabel(groupBox);
         labelCom5->setObjectName(QString::fromUtf8("labelCom5"));
 
         gridLayout->addWidget(labelCom5, 5, 0, 1, 1);
 
+        labelCom6 = new QLabel(groupBox);
+        labelCom6->setObjectName(QString::fromUtf8("labelCom6"));
+
+        gridLayout->addWidget(labelCom6, 6, 0, 1, 1);
+
+        pushButtonExportData = new QPushButton(groupBox);
+        pushButtonExportData->setObjectName(QString::fromUtf8("pushButtonExportData"));
+        pushButtonExportData->setEnabled(true);
+        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(pushButtonExportData->sizePolicy().hasHeightForWidth());
+        pushButtonExportData->setSizePolicy(sizePolicy2);
+        pushButtonExportData->setMinimumSize(QSize(0, 70));
+        pushButtonExportData->setCheckable(true);
+
+        gridLayout->addWidget(pushButtonExportData, 18, 0, 1, 4);
+
+        label_15 = new QLabel(groupBox);
+        label_15->setObjectName(QString::fromUtf8("label_15"));
+
+        gridLayout->addWidget(label_15, 15, 0, 1, 1);
+
+        label_9 = new QLabel(groupBox);
+        label_9->setObjectName(QString::fromUtf8("label_9"));
+
+        gridLayout->addWidget(label_9, 12, 0, 1, 1);
+
         label_7 = new QLabel(groupBox);
         label_7->setObjectName(QString::fromUtf8("label_7"));
 
         gridLayout->addWidget(label_7, 10, 0, 1, 1);
+
+        label_stancetimeL = new QLabel(groupBox);
+        label_stancetimeL->setObjectName(QString::fromUtf8("label_stancetimeL"));
+
+        gridLayout->addWidget(label_stancetimeL, 11, 3, 1, 1);
 
         btnNextFrame = new QPushButton(groupBox);
         btnNextFrame->setObjectName(QString::fromUtf8("btnNextFrame"));
@@ -585,134 +686,16 @@ public:
 
         gridLayout->addWidget(btnNextFrame, 19, 2, 1, 2);
 
-        pushButtonOpen = new QPushButton(groupBox);
-        pushButtonOpen->setObjectName(QString::fromUtf8("pushButtonOpen"));
-        pushButtonOpen->setEnabled(true);
-        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Fixed);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(pushButtonOpen->sizePolicy().hasHeightForWidth());
-        pushButtonOpen->setSizePolicy(sizePolicy2);
-        pushButtonOpen->setMinimumSize(QSize(0, 70));
-        pushButtonOpen->setCheckable(true);
-
-        gridLayout->addWidget(pushButtonOpen, 17, 0, 1, 4);
-
-        labelCom2 = new QLabel(groupBox);
-        labelCom2->setObjectName(QString::fromUtf8("labelCom2"));
-
-        gridLayout->addWidget(labelCom2, 2, 0, 1, 1);
-
-        label_8 = new QLabel(groupBox);
-        label_8->setObjectName(QString::fromUtf8("label_8"));
-
-        gridLayout->addWidget(label_8, 11, 0, 1, 1);
-
-        label_stancetimeL = new QLabel(groupBox);
-        label_stancetimeL->setObjectName(QString::fromUtf8("label_stancetimeL"));
-
-        gridLayout->addWidget(label_stancetimeL, 11, 3, 1, 1);
-
-        label_stancetimeR = new QLabel(groupBox);
-        label_stancetimeR->setObjectName(QString::fromUtf8("label_stancetimeR"));
-
-        gridLayout->addWidget(label_stancetimeR, 12, 3, 1, 1);
-
-        label_walkspeed = new QLabel(groupBox);
-        label_walkspeed->setObjectName(QString::fromUtf8("label_walkspeed"));
-
-        gridLayout->addWidget(label_walkspeed, 14, 3, 1, 1);
-
-        labelCom3 = new QLabel(groupBox);
-        labelCom3->setObjectName(QString::fromUtf8("labelCom3"));
-
-        gridLayout->addWidget(labelCom3, 3, 0, 1, 1);
-
-        comboBoxCom7 = new QComboBox(groupBox);
-        comboBoxCom7->setObjectName(QString::fromUtf8("comboBoxCom7"));
-        comboBoxCom7->setMinimumSize(QSize(0, 25));
-
-        gridLayout->addWidget(comboBoxCom7, 7, 3, 1, 1);
-
-        pushButtonExportData = new QPushButton(groupBox);
-        pushButtonExportData->setObjectName(QString::fromUtf8("pushButtonExportData"));
-        pushButtonExportData->setEnabled(true);
-        sizePolicy2.setHeightForWidth(pushButtonExportData->sizePolicy().hasHeightForWidth());
-        pushButtonExportData->setSizePolicy(sizePolicy2);
-        pushButtonExportData->setMinimumSize(QSize(0, 70));
-        pushButtonExportData->setCheckable(true);
-
-        gridLayout->addWidget(pushButtonExportData, 18, 0, 1, 4);
-
-        label_FPS = new QLabel(groupBox);
-        label_FPS->setObjectName(QString::fromUtf8("label_FPS"));
-
-        gridLayout->addWidget(label_FPS, 9, 3, 1, 1);
-
-        checkBox_showChannel = new QCheckBox(groupBox);
-        checkBox_showChannel->setObjectName(QString::fromUtf8("checkBox_showChannel"));
-
-        gridLayout->addWidget(checkBox_showChannel, 16, 0, 1, 2);
-
-        comboBoxCom2 = new QComboBox(groupBox);
-        comboBoxCom2->setObjectName(QString::fromUtf8("comboBoxCom2"));
-        comboBoxCom2->setMinimumSize(QSize(0, 25));
-
-        gridLayout->addWidget(comboBoxCom2, 2, 3, 1, 1);
-
-        label_3 = new QLabel(groupBox);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-
-        gridLayout->addWidget(label_3, 8, 0, 1, 2);
-
-        label_15 = new QLabel(groupBox);
-        label_15->setObjectName(QString::fromUtf8("label_15"));
-
-        gridLayout->addWidget(label_15, 15, 0, 1, 1);
-
-        label_10 = new QLabel(groupBox);
-        label_10->setObjectName(QString::fromUtf8("label_10"));
-
-        gridLayout->addWidget(label_10, 13, 0, 1, 1);
-
         comboBoxCom6 = new QComboBox(groupBox);
         comboBoxCom6->setObjectName(QString::fromUtf8("comboBoxCom6"));
         comboBoxCom6->setMinimumSize(QSize(0, 25));
 
         gridLayout->addWidget(comboBoxCom6, 6, 3, 1, 1);
 
-        label_stepwidth = new QLabel(groupBox);
-        label_stepwidth->setObjectName(QString::fromUtf8("label_stepwidth"));
+        label_10 = new QLabel(groupBox);
+        label_10->setObjectName(QString::fromUtf8("label_10"));
 
-        gridLayout->addWidget(label_stepwidth, 15, 3, 1, 1);
-
-        comboBoxCom3 = new QComboBox(groupBox);
-        comboBoxCom3->setObjectName(QString::fromUtf8("comboBoxCom3"));
-        comboBoxCom3->setMinimumSize(QSize(0, 25));
-
-        gridLayout->addWidget(comboBoxCom3, 3, 3, 1, 1);
-
-        comboBoxCom5 = new QComboBox(groupBox);
-        comboBoxCom5->setObjectName(QString::fromUtf8("comboBoxCom5"));
-        comboBoxCom5->setMinimumSize(QSize(0, 25));
-
-        gridLayout->addWidget(comboBoxCom5, 5, 3, 1, 1);
-
-        labelCom6 = new QLabel(groupBox);
-        labelCom6->setObjectName(QString::fromUtf8("labelCom6"));
-
-        gridLayout->addWidget(labelCom6, 6, 0, 1, 1);
-
-        labelCom4 = new QLabel(groupBox);
-        labelCom4->setObjectName(QString::fromUtf8("labelCom4"));
-
-        gridLayout->addWidget(labelCom4, 4, 0, 1, 1);
-
-        comboBoxCom4 = new QComboBox(groupBox);
-        comboBoxCom4->setObjectName(QString::fromUtf8("comboBoxCom4"));
-        comboBoxCom4->setMinimumSize(QSize(0, 25));
-
-        gridLayout->addWidget(comboBoxCom4, 4, 3, 1, 1);
+        gridLayout->addWidget(label_10, 13, 0, 1, 1);
 
         btnStartPlay = new QPushButton(groupBox);
         btnStartPlay->setObjectName(QString::fromUtf8("btnStartPlay"));
@@ -720,42 +703,92 @@ public:
 
         gridLayout->addWidget(btnStartPlay, 19, 0, 1, 2);
 
-        comboBoxCom1 = new QComboBox(groupBox);
-        comboBoxCom1->setObjectName(QString::fromUtf8("comboBoxCom1"));
-        comboBoxCom1->setMinimumSize(QSize(0, 25));
+        comboBoxCom4 = new QComboBox(groupBox);
+        comboBoxCom4->setObjectName(QString::fromUtf8("comboBoxCom4"));
+        comboBoxCom4->setMinimumSize(QSize(0, 25));
 
-        gridLayout->addWidget(comboBoxCom1, 1, 0, 1, 4);
+        gridLayout->addWidget(comboBoxCom4, 4, 3, 1, 1);
 
-        label_2 = new QLabel(groupBox);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        labelCom2 = new QLabel(groupBox);
+        labelCom2->setObjectName(QString::fromUtf8("labelCom2"));
 
-        gridLayout->addWidget(label_2, 9, 0, 1, 1);
+        gridLayout->addWidget(labelCom2, 2, 0, 1, 1);
 
-        label_9 = new QLabel(groupBox);
-        label_9->setObjectName(QString::fromUtf8("label_9"));
+        spinBox = new QSpinBox(groupBox);
+        spinBox->setObjectName(QString::fromUtf8("spinBox"));
 
-        gridLayout->addWidget(label_9, 12, 0, 1, 1);
+        gridLayout->addWidget(spinBox, 8, 3, 1, 1);
 
-        label_16 = new QLabel(groupBox);
-        label_16->setObjectName(QString::fromUtf8("label_16"));
+        comboBoxCom7 = new QComboBox(groupBox);
+        comboBoxCom7->setObjectName(QString::fromUtf8("comboBoxCom7"));
+        comboBoxCom7->setMinimumSize(QSize(0, 25));
 
-        gridLayout->addWidget(label_16, 14, 0, 1, 1);
+        gridLayout->addWidget(comboBoxCom7, 7, 3, 1, 1);
+
+        comboBoxCom2 = new QComboBox(groupBox);
+        comboBoxCom2->setObjectName(QString::fromUtf8("comboBoxCom2"));
+        comboBoxCom2->setMinimumSize(QSize(0, 25));
+
+        gridLayout->addWidget(comboBoxCom2, 2, 3, 1, 1);
+
+        labelCom3 = new QLabel(groupBox);
+        labelCom3->setObjectName(QString::fromUtf8("labelCom3"));
+
+        gridLayout->addWidget(labelCom3, 3, 0, 1, 1);
+
+        label_FPS = new QLabel(groupBox);
+        label_FPS->setObjectName(QString::fromUtf8("label_FPS"));
+
+        gridLayout->addWidget(label_FPS, 9, 3, 1, 1);
+
+        pushButtonOpen = new QPushButton(groupBox);
+        pushButtonOpen->setObjectName(QString::fromUtf8("pushButtonOpen"));
+        pushButtonOpen->setEnabled(true);
+        sizePolicy2.setHeightForWidth(pushButtonOpen->sizePolicy().hasHeightForWidth());
+        pushButtonOpen->setSizePolicy(sizePolicy2);
+        pushButtonOpen->setMinimumSize(QSize(0, 70));
+        pushButtonOpen->setCheckable(true);
+
+        gridLayout->addWidget(pushButtonOpen, 17, 0, 1, 4);
+
+        label_3 = new QLabel(groupBox);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+
+        gridLayout->addWidget(label_3, 8, 0, 1, 2);
+
+        label_walkspeed = new QLabel(groupBox);
+        label_walkspeed->setObjectName(QString::fromUtf8("label_walkspeed"));
+
+        gridLayout->addWidget(label_walkspeed, 14, 3, 1, 1);
+
+        label_stancetimeR = new QLabel(groupBox);
+        label_stancetimeR->setObjectName(QString::fromUtf8("label_stancetimeR"));
+
+        gridLayout->addWidget(label_stancetimeR, 12, 3, 1, 1);
 
         label_steplenth = new QLabel(groupBox);
         label_steplenth->setObjectName(QString::fromUtf8("label_steplenth"));
 
         gridLayout->addWidget(label_steplenth, 13, 3, 1, 1);
 
+        label_stepFrequency = new QLabel(groupBox);
+        label_stepFrequency->setObjectName(QString::fromUtf8("label_stepFrequency"));
+
+        gridLayout->addWidget(label_stepFrequency, 10, 3, 1, 1);
+
+        labelCom1 = new QLabel(groupBox);
+        labelCom1->setObjectName(QString::fromUtf8("labelCom1"));
+
+        gridLayout->addWidget(labelCom1, 0, 0, 1, 1);
+
+        comboBoxCom1 = new QComboBox(groupBox);
+        comboBoxCom1->setObjectName(QString::fromUtf8("comboBoxCom1"));
+        comboBoxCom1->setMinimumSize(QSize(0, 25));
+
+        gridLayout->addWidget(comboBoxCom1, 1, 0, 1, 4);
+
 
         formLayout->setWidget(0, QFormLayout::LabelRole, groupBox);
-
-        horizontalSpacer_2 = new QSpacerItem(595, 674, QSizePolicy::Preferred, QSizePolicy::Minimum);
-
-        formLayout->setItem(0, QFormLayout::FieldRole, horizontalSpacer_2);
-
-        verticalSpacer = new QSpacerItem(17, 594, QSizePolicy::Minimum, QSizePolicy::Preferred);
-
-        formLayout->setItem(1, QFormLayout::LabelRole, verticalSpacer);
 
         tabWidget->addTab(tab_5, QString());
         tab_6 = new QWidget();
@@ -829,6 +862,8 @@ public:
         label_19->setText(QCoreApplication::translate("MainWindow", "\350\204\232\347\240\201", nullptr));
         label_20->setText(QCoreApplication::translate("MainWindow", "\345\216\213\345\212\233\344\270\255\345\277\203\350\275\250\350\277\271\357\274\232", nullptr));
         label_21->setText(QCoreApplication::translate("MainWindow", "\346\200\273\345\216\213\345\212\233", nullptr));
+        pushButton_static->setText(QCoreApplication::translate("MainWindow", "\351\207\207\351\233\206\351\235\231\346\200\201", nullptr));
+        pushButton_dynamic->setText(QCoreApplication::translate("MainWindow", "\351\207\207\351\233\206\345\212\250\346\200\201", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainWindow", "\346\265\213\350\257\225\350\200\205\346\225\260\346\215\2561", nullptr));
         groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "right", nullptr));
         groupBox_5->setTitle(QCoreApplication::translate("MainWindow", "left", nullptr));
@@ -855,33 +890,33 @@ public:
         pushButtonCalibration2->setText(QCoreApplication::translate("MainWindow", "Calibration", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainWindow", "Index", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "ComConfig", nullptr));
-        labelCom7->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\346\265\201\346\216\247", nullptr));
-        labelCom1->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\351\200\211\346\213\251", nullptr));
-        label_stepFrequency->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
-        labelCom5->setText(QCoreApplication::translate("MainWindow", "\345\245\207\345\201\266\346\240\241\351\252\214", nullptr));
-        label_7->setText(QCoreApplication::translate("MainWindow", "\346\255\245\351\242\221", nullptr));
-        btnNextFrame->setText(QCoreApplication::translate("MainWindow", "\344\270\213\344\270\200\345\270\247", nullptr));
-        pushButtonOpen->setText(QCoreApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", nullptr));
-        labelCom2->setText(QCoreApplication::translate("MainWindow", "\346\263\242\347\211\271\347\216\207", nullptr));
-        label_8->setText(QCoreApplication::translate("MainWindow", "\345\267\246\350\204\232\346\224\257\346\222\221\346\227\266\351\227\264", nullptr));
-        label_stancetimeL->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
-        label_stancetimeR->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
-        label_walkspeed->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
-        labelCom3->setText(QCoreApplication::translate("MainWindow", "\345\201\234\346\255\242\344\275\215", nullptr));
-        pushButtonExportData->setText(QCoreApplication::translate("MainWindow", "\345\257\274\345\207\272\346\225\260\346\215\256", nullptr));
-        label_FPS->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
-        checkBox_showChannel->setText(QCoreApplication::translate("MainWindow", "\351\200\232\351\201\223\346\230\276\347\244\272", nullptr));
-        label_3->setText(QCoreApplication::translate("MainWindow", "\346\234\200\345\244\247\350\211\262\346\235\241\345\200\274:", nullptr));
-        label_15->setText(QCoreApplication::translate("MainWindow", "\346\255\245\345\256\275", nullptr));
-        label_10->setText(QCoreApplication::translate("MainWindow", "\346\255\245\351\225\277", nullptr));
-        label_stepwidth->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
-        labelCom6->setText(QCoreApplication::translate("MainWindow", "\347\274\226\347\240\201\346\240\274\345\274\217", nullptr));
         labelCom4->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\344\275\215", nullptr));
-        btnStartPlay->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213\346\222\255\346\224\276", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow", "\345\270\247\347\216\207", nullptr));
-        label_9->setText(QCoreApplication::translate("MainWindow", "\345\217\263\350\204\232\346\224\257\346\222\221\346\227\266\351\227\264", nullptr));
+        labelCom7->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\346\265\201\346\216\247", nullptr));
+        label_stepwidth->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
+        checkBox_showChannel->setText(QCoreApplication::translate("MainWindow", "\351\200\232\351\201\223\346\230\276\347\244\272", nullptr));
+        label_8->setText(QCoreApplication::translate("MainWindow", "\345\267\246\350\204\232\346\224\257\346\222\221\346\227\266\351\227\264", nullptr));
         label_16->setText(QCoreApplication::translate("MainWindow", "\346\255\245\350\241\214\351\200\237\345\272\246", nullptr));
+        label_2->setText(QCoreApplication::translate("MainWindow", "\345\270\247\347\216\207", nullptr));
+        labelCom5->setText(QCoreApplication::translate("MainWindow", "\345\245\207\345\201\266\346\240\241\351\252\214", nullptr));
+        labelCom6->setText(QCoreApplication::translate("MainWindow", "\347\274\226\347\240\201\346\240\274\345\274\217", nullptr));
+        pushButtonExportData->setText(QCoreApplication::translate("MainWindow", "\345\257\274\345\207\272\346\225\260\346\215\256", nullptr));
+        label_15->setText(QCoreApplication::translate("MainWindow", "\346\255\245\345\256\275", nullptr));
+        label_9->setText(QCoreApplication::translate("MainWindow", "\345\217\263\350\204\232\346\224\257\346\222\221\346\227\266\351\227\264", nullptr));
+        label_7->setText(QCoreApplication::translate("MainWindow", "\346\255\245\351\242\221", nullptr));
+        label_stancetimeL->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
+        btnNextFrame->setText(QCoreApplication::translate("MainWindow", "\344\270\213\344\270\200\345\270\247", nullptr));
+        label_10->setText(QCoreApplication::translate("MainWindow", "\346\255\245\351\225\277", nullptr));
+        btnStartPlay->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213\346\222\255\346\224\276", nullptr));
+        labelCom2->setText(QCoreApplication::translate("MainWindow", "\346\263\242\347\211\271\347\216\207", nullptr));
+        labelCom3->setText(QCoreApplication::translate("MainWindow", "\345\201\234\346\255\242\344\275\215", nullptr));
+        label_FPS->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
+        pushButtonOpen->setText(QCoreApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", nullptr));
+        label_3->setText(QCoreApplication::translate("MainWindow", "\346\234\200\345\244\247\350\211\262\346\235\241\345\200\274:", nullptr));
+        label_walkspeed->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
+        label_stancetimeR->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
         label_steplenth->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
+        label_stepFrequency->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
+        labelCom1->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\351\200\211\346\213\251", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_5), QCoreApplication::translate("MainWindow", "Config", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_6), QCoreApplication::translate("MainWindow", "\350\241\250\346\240\274", nullptr));
         tabWidget_3->setTabText(tabWidget_3->indexOf(tab_18), QCoreApplication::translate("MainWindow", "Tab 1", nullptr));

@@ -218,6 +218,7 @@ class vHeatMap : public QWidget
     DisplayHeatMapData HeatMapData;  // 热图数据
     void updateHeatMapData(DisplayHeatMapData *data, QCPColorMap *m_colorMaptar);
     // void splitForeAndHindByWidth(const QVector2D &axis, const QPointF &centroid, Foot &foot);
+    void fuseMaxMap(vector<vector<double>> &fusedMaxMap, vector<vector<double>> &addMap);
 
     /*---回放功能end---*/
 

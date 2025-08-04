@@ -1231,3 +1231,23 @@ QTime staticTimer;
 //     playbackTimer->start(10000);  // 启动下一帧的定时器
 // }
 // void vHeatMap::coldynamic(void) {}
+void vHeatMap::fuseMaxMap(vector<vector<double>> &fusedMaxMap, vector<vector<double>> &addMap)
+{
+    if (fusedMaxMap.empty() || addMap.empty()) return;
+    quint32 rows = fusedMaxMap.size();
+    quint32 cols = fusedMaxMap[0].size();
+    if (rows != addMap.size() || cols != addMap[0].size())
+    {
+        qDebug() << addMap.size() <<addMap[0].size() ;
+        qDebug() << fusedMaxMap.size() <<fusedMaxMap[0].size() ;
+        qFatal("严重错误：程序终止");
+        return;
+    }
+    for (quint32 i = 0; i < rows; ++i)
+    {
+        for (quint32 j = 0; j < cols; ++j)
+        {
+            fusedMaxMap[i][j] = std::max(fusedMaxMap[i][j], addMap[i][j]);
+        }
+    }
+}
