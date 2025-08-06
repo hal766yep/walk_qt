@@ -70,12 +70,15 @@ void vHeatMap::dealSegment(ActivitySegment &dealSegment, const vector<vector<dou
         qDebug() << "一个足迹";
         markRegionOnBinary(largestRegion[0], dealSegment.foot[0].binary);
         qDebug() << "Area" << largestRegion[0].size() << "鞋码" << areaToShoeSize(largestRegion[0].size());
+        dealSegment.foot[0].contour = largestRegion[0];
     }
     else if (dealSegment.num_Foot == 2)
     {
         qDebug() << "两个足迹";
         markRegionOnBinary(largestRegion[0], dealSegment.foot[0].binary);
         markRegionOnBinary(largestRegion[1], (dealSegment.foot[1].binary));
+        dealSegment.foot[0].contour = largestRegion[0];
+        dealSegment.foot[1].contour = largestRegion[1];
     }
     else if (dealSegment.num_Foot > 2)
     {
@@ -694,7 +697,7 @@ void vHeatMap::markRegionOnBinary(const std::vector<std::pair<int, int>> &region
     {
         int x = pt.first;   // 列
         int y = pt.second;  // 行
-        if (y >= 0 && y < rows && x >= 0 && x < cols)
+        if (y >= 0 && y < cols && x >= 0 && x < rows)
         {
             binary[x][y] = true;
         }
@@ -1238,8 +1241,8 @@ void vHeatMap::fuseMaxMap(vector<vector<double>> &fusedMaxMap, vector<vector<dou
     quint32 cols = fusedMaxMap[0].size();
     if (rows != addMap.size() || cols != addMap[0].size())
     {
-        qDebug() << addMap.size() <<addMap[0].size() ;
-        qDebug() << fusedMaxMap.size() <<fusedMaxMap[0].size() ;
+        qDebug() << addMap.size() << addMap[0].size();
+        qDebug() << fusedMaxMap.size() << fusedMaxMap[0].size();
         qFatal("严重错误：程序终止");
         return;
     }
@@ -1250,4 +1253,94 @@ void vHeatMap::fuseMaxMap(vector<vector<double>> &fusedMaxMap, vector<vector<dou
             fusedMaxMap[i][j] = std::max(fusedMaxMap[i][j], addMap[i][j]);
         }
     }
+}
+
+QPointF rotatePoint(const QPointF &p, double angle_rad)
+{
+    double cosA = cos(angle_rad);
+    double sinA = sin(angle_rad);
+    return QPointF(p.x() * cosA - p.y() * sinA, p.x() * sinA + p.y() * cosA);
+}
+#include <algorithm>
+#include <cmath>
+#include <vector>
+
+using Grid = std::vector<std::vector<double>>;
+
+/**
+ * 双线性插值采样：给定非整数坐标 (x, y)，对 grid 进行双线性插值
+ */
+double bilinearSample(const Grid &grid, double x, double y)
+{
+    int H = grid.size();
+    int W = grid.empty() ? 0 : grid[0].size();
+
+    // 四个邻近整数索引
+    int x0 = static_cast<int>(std::floor(x));
+    int x1 = x0 + 1;
+    int y0 = static_cast<int>(std::floor(y));
+    int y1 = y0 + 1;
+
+    // 如果在边界外，返回 0 或背景值
+    if (x0 < 0 || x1 < 0 || y0 < 0 || y1 < 0 || x0 >= W || x1 >= W || y0 >= H || y1 >= H)
+    {
+        return 0.0;
+    }
+
+    // 插值权重
+    double dx = x - x0;
+    double dy = y - y0;
+
+    // 四角值
+    double v00 = grid[y0][x0];
+    double v10 = grid[y0][x1];
+    double v01 = grid[y1][x0];
+    double v11 = grid[y1][x1];
+
+    // 双线性插值公式
+    double v0 = v00 * (1 - dx) + v10 * dx;
+    double v1 = v01 * (1 - dx) + v11 * dx;
+    return v0 * (1 - dy) + v1 * dy;
+}
+
+/**
+ * 将格网按单位向量 (vx,vy) 指定方向旋转至 y 轴，并用双线性插值填充
+ */
+Grid rotateGridToYAxisBilinear(const Grid &grid, QVector2D axis)
+{
+    // 1. 计算旋转角度
+    double theta = -std::atan2(axis.x(), axis.y());
+
+    int H = grid.size();
+    int W = grid.empty() ? 0 : grid[0].size();
+
+    // 2. 新格网尺寸
+    int Wp = static_cast<int>(std::ceil(std::abs(H * std::sin(theta)) + std::abs(W * std::cos(theta))));
+    int Hp = static_cast<int>(std::ceil(std::abs(H * std::cos(theta)) + std::abs(W * std::sin(theta))));
+
+    // 3. 中心点
+    double cx = (W - 1) / 2.0, cy = (H - 1) / 2.0;
+    double cxp = (Wp - 1) / 2.0, cyp = (Hp - 1) / 2.0;
+
+    // 4. 准备输出网格
+    Grid out(Hp, std::vector<double>(Wp, 0.0));
+
+    // 5. 遍历新网格，逆变换并双线性插值
+    double cosA = std::cos(theta), sinA = std::sin(theta);
+    for (int ip = 0; ip < Hp; ++ip)
+    {
+        for (int jp = 0; jp < Wp; ++jp)
+        {
+            // 平移到新中心
+            double x_new = jp - cxp;
+            double y_new = ip - cyp;
+            // 逆旋转回原坐标系
+            double x_old = x_new * cosA + y_new * sinA + cx;
+            double y_old = -x_new * sinA + y_new * cosA + cy;
+            // 双线性插值采样
+            out[ip][jp] = bilinearSample(grid, x_old, y_old);
+        }
+    }
+
+    return out;
 }

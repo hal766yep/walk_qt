@@ -458,7 +458,7 @@ void vHeatMap::calMatrix(std::vector<double> &channels)
     now1 = now;
     ui->label_FPS->setText(QString("%1").arg(fps, 0, 'f', 2));
 
-    // ------处理动作段，计算压力中心轨迹----------//
+    //------处理动作段，计算压力中心轨迹----------//
     processActivitySegment(matrixSum, now);
     // ----------刷新页面-----------------//
     updateHeatMapData(&HeatMapData, m_colorMap);  // 更新热力图数据
@@ -961,76 +961,75 @@ void vHeatMap::processActivitySegment(double matrixSum, qint64 now)
     {
         if (staticcol == 0)  // 开始保存静态
         {
-            staticcol = 1;           // 标记已开始静态
-            startKeepTimestamp = 0;  // 清空开始时间戳
+            staticcol = 1;            // 标记已开始静态
+            startKeepTimestamp = 0;   // 清空开始时间戳
             isPlaybackActive = true;  // 开始播放静态段
             staticSegment.overlay.assign(ROWS * maptoplotX, std::vector<double>(COLS * maptoplotY, 0.0));
         }
-        else if (QTime::currentTime() > staticTimer.addSecs(5))  // 处理静态
+        else if (QTime::currentTime() > staticTimer.addSecs(5))  // 五秒
         {
             staticTimer = QTime();  // 清空
+            staticcol = 0;          // 重置静态标记
             qDebug() << "Static 采集完成";
-            staticcol = 0;  // 重置静态标记
-            // staticSegment = all_segments[currentSegmentIndex]
-            // 判断是否有足够的元素
-            // if (all_segments[currentSegmentIndex].snapshots.size() < 200)
-            // {
-            //     qDebug() << "元素不足200个,退出程序。";
-            //     return;
-            // }
+            dealSegment(staticSegment, staticSegment.overlay, 0, shoeSizeToArea(36));
+            classifyLeftRight(staticSegment);
+            if (staticSegment.num_Foot == 1)
+            {
+                qDebug() << "Static 采集错误";
+            }
+            // else if (all_segments[currentSegmentIndex].num_Foot == 2)
+            {
+                if (staticSegment.foot[0].is_left_foot == staticSegment.foot[1].is_left_foot)  // 判定为静态段脚印
+                {
+                    qDebug() << "Static 识别错误";
+                }
+                // 遍历两只脚
+                for (auto &f : staticSegment.foot)
+                {
+                    f.overlay.assign(ROWS * maptoplotX, std::vector<double>(COLS * maptoplotY, 0.0));
+                    // f.overlay = staticSegment.overlay;
+                    // f.binary.resize(NX, std::vector<bool>(NY, false));  // 初始化每个foot的binary为200x200
+                    for (size_t j = 0; j < staticSegment.overlay.size(); ++j)
+                    {
+                        for (size_t k = 0; k < staticSegment.overlay[j].size(); ++k)
+                        {
+                            if (f.binary[j][k] == 1)
+                            {
+                                f.overlay[j][k] = staticSegment.overlay[j][k];
+                            }
+                        }
+                    }
+                    qDebug() << "staticSegment.overlay.size()" << staticSegment.overlay.size();
+                    qDebug() << "staticSegment.overlay[0].size()" << staticSegment.overlay[0].size();
 
-            // // 有足够元素才执行复制
-            // staticSegment = all_segments[currentSegmentIndex];
-
-            // const auto &snapshots = staticSegment.snapshots;
-
-            // size_t h = snapshots[0].size();
-            // size_t w = snapshots[0][0].size();
-            // staticSegment.overlay.assign(h, std::vector<double>(w, 0.0));
-            // staticSegment.fusedMaxMap.assign(h, std::vector<double>(w, 0.0));
-            // // 叠加所有帧
-            // for (const auto &frame : snapshots)
-            // {
-            //     for (size_t j = 0; j < h; ++j)
-            //     {
-            //         for (size_t k = 0; k < w; ++k)
-            //         {
-            //             staticSegment.overlay[j][k] += frame[j][k];
-            //         }
-            //     }
-            // }
-            // // 2、过滤非足印
-            // dealSegment(staticSegment, staticSegment.overlay, 0, shoeSizeToArea(36));
-            // if (staticSegment.num_Foot == 0)
-            // {
-            //     qDebug() << "none foot";
-            //     all_segments.pop_back();
-            //     currentSegmentIndex--;
-            //     qDebug() << "删除这一帧";
-            //     return;
-            // }
-            // classifyLeftRight(staticSegment);
-            // qDebug() << "过滤非足迹";  // 用于回放
-            // bool keep_key[2];
-            // dealSnapshots(staticSegment);
-            // startTimedPlayback(staticSegment);  // 开始播放静态段
-            // test--显示截图
+                    // f.binary = rotateGridToYAxisBilinear(f.binary, f.footOrientationVec);
+                    // markRegionOnBinary(f.contour, f.binary);
+                }
+                fuseMaxMap(staticSegment.foot[0].overlay, staticSegment.foot[1].overlay);
+                staticSegment.overlay = staticSegment.foot[0].overlay;
+                // for (auto &row : staticSegment.overlay)
+                // {
+                //     std::fill(row.begin(), row.end(), 0);
+                // }
+                for (auto &row : m_matrix)
+                {
+                    std::fill(row.begin(), row.end(), 0);
+                }
+            }
+            HeatMapData.annotatedFoot = &staticSegment;  // 更新热图数据
             //  1. 截图 QCustomPlot 到 QPixmap
-
             QPixmap pixmap = m_customPlot->toPixmap(ROWS * maptoplotX, COLS * maptoplotY);  // 分辨率可以调整
-
             // 2. 创建 QLabel 显示截图
             QLabel *colorMapLabel = new QLabel;
             colorMapLabel->setPixmap(pixmap);
             // colorMapLabel->setScaledContents(true);  // 让图像适应 QLabel 大小
             // colorMapLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
             // 3. 添加到 verticalLayout_2
             ui->verticalLayout_2->addWidget(colorMapLabel);
-            isPlaybackActive = false;
-            }
+            // isPlaybackActive = false;
+        }
         // if (staticcol == 1)  // 开始保存静态
-            {
+        {
             qDebug() << "Static Timer is running";
             fuseMaxMap(staticSegment.overlay, m_matrix);
             // 显示

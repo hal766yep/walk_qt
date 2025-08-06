@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @brief Represents a heat map visualization widget with advanced pressure mapping and analysis capabilities
  *
  * This class provides functionality for:
@@ -45,6 +45,7 @@ using namespace std;
 #define GAP_ELECTORDES 1.0f   // 电极间距，单位：mm
 #define WIDTH_ELECTORDE 5.0f  // 电极宽度，单位：mm
 extern QTime staticTimer;
+std::vector<std::vector<double>> rotateGridToYAxisBilinear(const std::vector<std::vector<double>> &grid, QVector2D axis);
 
 /**
  * @brief 脚的结构体定义
@@ -58,12 +59,14 @@ typedef struct
     bool is_left_foot;                                        // 是否是左脚
     double extreme_lenth[4];                                  // 四个极点，上下左右
     QPointF extreme_point[4];                                 // 四个端点，右上开始
-    vector<vector<bool>> binary;                              //
+    vector<vector<bool>> binary;                              // 二值图
+    std::vector<std::pair<int, int>> contour;                 //
     vector<qint64> Timestamp;                                 // 原始时间，
     double footLength;                                        // 脚长
     double footWidth;                                         // 脚宽
     double shoeSize;                                          // 脚码
     std::vector<std::vector<std::vector<double>>> snapshots;  //
+    std::vector<std::vector<double>> overlay;
     std::vector<qint64> time_gaps;
     vector<QPointF> PressureCenterTrajectory;  // 压力中心
 } Foot;
